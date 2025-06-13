@@ -9,4 +9,6 @@ import com.performance.entities.Faculty;
 
 public interface FacultyRepository extends JpaRepository<Faculty, Integer>{
 	Optional<Faculty>findByEmail(String email);
+	
+	Optional<Faculty> findByUserId(int userId);
 }

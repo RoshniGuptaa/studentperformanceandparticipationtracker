@@ -1,10 +1,13 @@
 package com.performance.entities;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 @Entity
@@ -21,6 +24,9 @@ public class Faculty {
 	@JoinColumn(name="user_id")
 	private User user;
 
+	@OneToMany(mappedBy = "faculty")
+	private List<Subject> subjects;
+
 	public Faculty() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -33,6 +39,16 @@ public class Faculty {
 		this.department = department;
 		this.email = email;
 		this.user = user;
+	}
+
+	public Faculty(int id, String name, String department, String email, User user, List<Subject> subjects) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.department = department;
+		this.email = email;
+		this.user = user;
+		this.subjects = subjects;
 	}
 
 	public int getId() {
@@ -73,6 +89,15 @@ public class Faculty {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	
+	public List<Subject> getSubjects() {
+		return subjects;
+	}
+
+	public void setSubjects(List<Subject> subjects) {
+		this.subjects = subjects;
 	}
 
 	@Override
