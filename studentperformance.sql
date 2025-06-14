@@ -22,3 +22,10 @@ DROP TABLE IF EXISTS user;
 Select * from user;
 Select * from student;
 Select * from faculty;
+select * from course;
+select * from subject order by course_id asc;
+select * from attendance order by student_id asc;
+delete from user where id=3;
+
+show tables;
+DROP table student_course;

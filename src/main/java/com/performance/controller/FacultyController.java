@@ -84,9 +84,15 @@ public class FacultyController {
 	    	  return ResponseEntity.badRequest().body("Faculty do not handle this subject");
 	      
 	      Student student=optionalStudent.get();
+	      
+	      if(!student.getSubjects().contains(subject))
+	    	  return ResponseEntity.badRequest().body("Student not enrolled in this subject");
+	      
 	      Course course=subject.getCourse();
 	      
 	      Attendance attendance=new Attendance();
+	      if(attendanceRepository.findByStudentIdAndSubjectIdAndDate(student.getId(), subject.getId(), date).isPresent())
+	    	   return ResponseEntity.badRequest().body("Attendence already marked for the student");
 	      attendance.setStudent(student);
 	      attendance.setFaculty(faculty);
 	      attendance.setSubject(subject);
@@ -129,7 +135,10 @@ public class FacultyController {
 	    	long total=attendance.size();
 	    	long present=attendance.stream().filter(f->f.getStatus().equals("Present")).count();
 	    	
-	    	double percentage= total==0?0.0:(present/total*100);
+	    	double percentage= total==0?0.0:((double)present/total*100);
+	    	
+	    	percentage = Math.round(percentage * 100.0) / 100.0; 
+
 	    	
 	    	Map<String, Object> resultData=new HashMap<>();
 	    	resultData.put("Roll Number",student.getRollNumber());

@@ -147,17 +147,20 @@ public class AdminController {
 
         
         Subject subject = optionalSubject.get();
-        subject.setSubjectCode(req.getSubjectCode());
-        subject.setSubjectName(req.getSubjectName());
         
+        if(req.getSubjectCode()!=null) subject.setSubjectCode(req.getSubjectCode());
+        if(req.getSubjectName()!=null) subject.setSubjectName(req.getSubjectName());
+        
+        if(req.getCourseId()!=0) {
         Optional<Course> optionalCourse = courseRepository.findById(req.getCourseId());
         if (optionalCourse.isEmpty()) return ResponseEntity.badRequest().body("Course not found");
         else subject.setCourse(optionalCourse.get());
-        
+        }
+        if(req.getFacultyId()!=0) {
         Optional<Faculty> optionalFaculty = facultyRepository.findById(req.getFacultyId());
         if (optionalFaculty.isEmpty()) return ResponseEntity.badRequest().body("Faculty not found");
         else subject.setFaculty(optionalFaculty.get());
-        
+        }
    
 
         subjectRepository.save(subject);
