@@ -24,12 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.performance.dao.AttendanceRepository;
 import com.performance.dao.CourseRepository;
 import com.performance.dao.FacultyRepository;
+import com.performance.dao.PerformanceRepository;
 import com.performance.dao.StudentRepository;
 import com.performance.dao.SubjectRepository;
 import com.performance.dao.UserRepository;
 import com.performance.entities.Attendance;
 import com.performance.entities.Course;
 import com.performance.entities.Faculty;
+import com.performance.entities.Performance;
 import com.performance.entities.Student;
 import com.performance.entities.Subject;
 import com.performance.entities.User;
@@ -55,6 +57,8 @@ public class FacultyController {
 	    @Autowired
 	    private SubjectRepository subjectRepository;
 	    
+	    @Autowired
+	    private PerformanceRepository performanceRepository;
 	    
 	    @PostMapping("/mark-attendance")
 	    public ResponseEntity<String> markAttendance(@RequestParam String rollNumber,
@@ -151,6 +155,56 @@ public class FacultyController {
 	    	
 	    	
 	    }
+	    
+	 //---------------------------ENTER MARKS -----------------------------------------------
+	 
+	 @PostMapping("enter-marks")
+	 public ResponseEntity<String> enterSubjectMarks(@RequestParam String rollNumber,
+			                                          @RequestParam String subjectCode,
+			                                          @RequestParam int marks,
+			                                          @RequestParam(required = false) String comments,Principal principal)
+	 {
+		User  facultyUser =userRepository.findByUsername(principal.getName()).get() ;
+		 
+	     Optional<Faculty> optfaculty= facultyRepository.findByUserId(facultyUser.getId());
+	     if(optfaculty.isEmpty())
+	    	  return ResponseEntity.badRequest().body("You are not authorized as faculty");
+	     
+	     Faculty faculty=optfaculty.get();
+	     
+	    Optional<Student> optStudent = studentRepository.findByRollNumber(rollNumber);
+	    if(optStudent.isEmpty())
+	    	 return ResponseEntity.badRequest().body("No Student found whith roll number :"+rollNumber);
+	    
+	    Student student=optStudent.get();
+	    
+	    Optional<Subject> optSubject = subjectRepository.findBySubjectCode(subjectCode);
+	    if(optSubject.isEmpty())
+	    	 return ResponseEntity.badRequest().body("No Subject found whith code :"+subjectCode);
+	    
+	    Subject subject=optSubject.get();
+	    if(!student.getSubjects().contains(subject))
+	    	return ResponseEntity.badRequest().body("Student not enrolled in this subject.... ");
+	    
+	    if(!(subject.getFaculty()==faculty))
+	    	return ResponseEntity.badRequest().body("Faculty not authorized for this subject.... ");
+	    
+	    
+	    Performance performance=new Performance();
+	    
+	    performance.setStudent(student);
+	    performance.setFaculty(faculty);
+	    performance.setCourse(student.getCourse());
+	    performance.setSubject(subject);
+	    performance.setMarks(marks);
+	    performance.setComments(comments);
+	    
+	    performanceRepository.save(performance);
+	    
+	    return ResponseEntity.ok("Marks added successfully for student :"+student.getName());
+	     
+	 }
+	 
 	    
 	    
 	    
