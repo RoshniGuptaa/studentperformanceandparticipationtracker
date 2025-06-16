@@ -189,6 +189,8 @@ public class FacultyController {
 	    if(!(subject.getFaculty()==faculty))
 	    	return ResponseEntity.badRequest().body("Faculty not authorized for this subject.... ");
 	    
+	    if( performanceRepository.findByStudentIdAndSubjectId(student.getId(),subject.getId())!=null)
+	    	 return ResponseEntity.badRequest().body("Marks already assigned ...");
 	    
 	    Performance performance=new Performance();
 	    

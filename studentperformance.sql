@@ -26,9 +26,11 @@ select * from course;
 select * from subject order by course_id asc;
 select * from attendance order by student_id asc;
 select * from student_subjects;
+select * from performance;
 
 delete from user where id=3;
 
 show tables;
 DROP table student_course;
 Delete from attendance where  student_id=10 and subject_id=3 and date="2021-03-01";
+Delete from performance where id=4;
