@@ -1,0 +1,85 @@
+@charset "UTF-8";
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('/img/EduTrackBackground.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .card {
+             background-color: rgba(30, 30, 30, 0.55);
+            backdrop-filter: blur(12px);
+            /*background: rgba(255, 255, 255, 0.15);*/
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            color: #f1f1f1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .card h3 {
+    color: #ffffff; /* Slightly darker heading */
+}
+
+        .form-label, .form-control {
+            color: #cccccc;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+        }
+.form-control:focus {
+    background-color: #262626;
+    color: #ffffff;
+    border-color: #6c63ff;
+    box-shadow: 0 0 0 0.2rem rgba(108, 99, 255, 0.25);
+}
+        .form-control::placeholder {
+            color: #ddd;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+            border-radius: 10px;
+            transition: 0.3s ease;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+.btn-primary {
+    background-color: #6c63ff;
+    border-color: #6c63ff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #584bd6;
+    border-color: #584bd6;
+}
+
+a {
+    color: #aaaaaa;
+}
+a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+        /* a {
+             color: #666666;
+            text-decoration: underline;
+        } */
+
+        .alert {
+            border-radius: 10px;
+        }
+
+        h3 {
+            font-weight: 600;
+        }
+    

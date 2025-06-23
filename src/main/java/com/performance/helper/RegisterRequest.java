@@ -9,6 +9,8 @@ public class RegisterRequest {
 
     @NotBlank
     private String password;
+    @NotBlank(message="password do not match..")
+    private String confirmpassword;
     
 	/*
 	 * private String role;
@@ -17,6 +19,14 @@ public class RegisterRequest {
 	 * 
 	 * public void setRole(String role) { this.role = role; }
 	 */
+
+	public String getConfirmpassword() {
+		return confirmpassword;
+	}
+
+	public void setConfirmpassword(String confirmpassword) {
+		this.confirmpassword = confirmpassword;
+	}
 
 	public String getUsername() {
 		return username;

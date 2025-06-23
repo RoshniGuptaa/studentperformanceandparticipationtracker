@@ -10,34 +10,51 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.performance.entities.User;
 
 
+public class CustomUserDetails implements UserDetails {
 
-public class CustomUserDetails implements UserDetails{
+    private final User user;
 
-	private User user;
-	
-	public CustomUserDetails(User user) {
-		super();
-		this.user = user;
-	}
+    public CustomUserDetails(User user) {
+        this.user = user;
+    }
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		SimpleGrantedAuthority simpleGrantedAuthority=new SimpleGrantedAuthority(user.getRole());
-		
-		return List.of(simpleGrantedAuthority);
-	}
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(user.getRole()));
+    }
 
-	@Override
-	public String getPassword() {
-		
-		return user.getPassword();
-	}
+    @Override
+    public String getPassword() {
+        return user.getPassword();
+    }
 
-	@Override
-	public String getUsername() {
-		// TODO Auto-generated method stub
-		return user.getUsername();
-	}
+    @Override
+    public String getUsername() {
+        return user.getUsername();
+    }
+   
+    public String getRole() {
+    	return user.getRole();
+    }
 
-	
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
+

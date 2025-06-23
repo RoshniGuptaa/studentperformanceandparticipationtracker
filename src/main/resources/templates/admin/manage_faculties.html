@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/base :: layout(~{::section}, 'Manage Faculties')}">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<section class="container mt-5">
+    <h2 class="text-center text-dark mb-4">Manage Faculties</h2>
+     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center bg-white shadow">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="faculty : ${facultyPage.content}">
+                    <td th:text="${faculty.user.username}"></td>
+                    <td th:text="${faculty.name}"></td>
+                    <td th:text="${faculty.department}"></td>
+                    <td th:text="${faculty.email}"></td>
+                    <td>
+                        <a th:href="@{'/admin/edit-faculty-form/' + ${faculty.user.username}}" class="btn btn-sm btn-primary">Edit</a>
+                        <a th:href="@{'/admin/api/delete-faculty/' + ${faculty.user.username}}" 
+                           onclick="return confirm('Are you sure?')" 
+                           class="btn btn-sm btn-danger">Delete</a>
+                        <a th:href="@{'/admin/assign-subject-form/' + ${faculty.id}}" class="btn btn-sm btn-secondary">Assign Subjects</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- Pagination -->
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/manage-faculties(page=${currentPage - 1})}">Previous</a>
+            </li>
+
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${currentPage == i} ? 'active'">
+                <a class="page-link" th:href="@{'/admin/manage-faculties?page=' + ${i}}" th:text="${i + 1}">1</a>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/manage-faculties(page=${currentPage + 1})}">Next</a>
+            </li>
+        </ul>
+    </nav>
+</section>
+</body>
+</html>

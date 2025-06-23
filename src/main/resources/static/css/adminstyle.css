@@ -1,0 +1,128 @@
+@charset "UTF-8";
+/*LOGIN*/
+ 
+         body {
+    background: linear-gradient(135deg ,rgb(252,246, 153),rgb(255,215, 217), rgb(131, 201, 136));
+    /*background: linear-gradient(135deg, #e0f7fa, #f3e5f5, #e8f5e9);*/
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s ease infinite;
+    transition: background 1s ease-in-out;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+} 
+ @keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}  
+        .login-box {
+            max-width: 400px;
+            margin: 60px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            text-align: center;
+        }
+ /*SIDE BAR*/
+ /* Initially hide sidebar */
+.sidebar {
+    width: 250px;
+    transition: all 0.3s ease;
+    position: fixed;
+    height: 100vh;
+    background-color: #343a40;
+    color: white;
+    padding-top: 60px;
+    left: 0;
+    z-index: 1000;
+    
+    
+}
+
+.sidebar .item {
+    display: block;
+    padding: 12px 20px;
+    color: white;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+.sidebar .item:hover {
+    background-color: #495057;
+}
+
+/* Hide sidebar on toggle */
+.sidebar.active {
+    left: -260px;
+}
+
+/* Adjust content when sidebar is hidden */
+.content {
+    transition: margin-left 0.3s ease;
+    margin-left: 260px;
+}
+.content.expanded {
+    margin-left: 0;
+}
+.sidebar .dropdown-sub {
+    padding-left: 25px;
+    background-color: #3f474e;
+}
+
+.sidebar .dropdown-sub .item {
+    font-size: 0.95rem;
+    padding: 8px 20px;
+    color: #d1d1d1;
+}
+
+
+
+        .card {
+             background: linear-gradient(rgba(255, 255, 255, 0.4),rgba(0, 180, 216, 0.3)) ; /* Semi-transparent white */
+        backdrop-filter: blur(10px); /* Frosted glass effect */
+        -webkit-backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            box-shadow: 0 8px 20px rgba(31, 38, 135, 0.1);
+        }
+
+        .form-control {
+            border: 1px solid #ced4da;
+        }
+
+        label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .btn-primary {
+            background-color: #4a90e2;
+            border-color: #4a90e2;
+        }
+
+        .btn-primary:hover {
+            background-color: #357ab7;
+        }
+
+        h3 {
+            color: #4a4a4a;
+            font-weight: 600;
+        }
+
+        .alert {
+            font-size: 0.9rem;
+        }
+    
+ 

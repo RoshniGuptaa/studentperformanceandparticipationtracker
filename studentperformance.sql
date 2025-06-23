@@ -34,3 +34,4 @@ show tables;
 DROP table student_course;
 Delete from attendance where  student_id=10 and subject_id=3 and date="2021-03-01";
 Delete from performance where id=4;
+Delete from user where id=22;

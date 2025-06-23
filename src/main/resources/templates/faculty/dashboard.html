@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{faculty/base :: layout(~{::section}, 'Faculty Dashboard')}">
+<head>
+    <meta charset="UTF-8">
+    
+</head>
+<body>
+
+    <section class="container mt-5 overlay">
+    <h2 class="text-center mb-5 text-primary">Faculty Dashboard</h2>
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card dashboard-card p-4 h-100">
+                <div class="card-body d-flex align-items-center">
+                    <i class="fas fa-calendar-check dashboard-icon mr-3"></i>
+                    <div>
+                        <div class="dashboard-title">Mark Attendance</div>
+                        <a th:href="@{/faculty/mark-attendance}" class="stretched-link text-dark"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card dashboard-card p-4 h-100">
+                <div class="card-body d-flex align-items-center">
+                    <i class="fas fa-pen dashboard-icon mr-3"></i>
+                    <div>
+                        <div class="dashboard-title">Enter Marks</div>
+                        <a th:href="@{/faculty/enter-marks}" class="stretched-link text-dark"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card dashboard-card p-4 h-100">
+                <div class="card-body d-flex align-items-center">
+                    <i class="fas fa-chart-bar dashboard-icon mr-3"></i>
+                    <div>
+                        <div class="dashboard-title">View Attendance Summary</div>
+                        <a th:href="@{/faculty/view-attendance}" class="stretched-link text-dark"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card dashboard-card p-4 h-100">
+                <div class="card-body d-flex align-items-center">
+                    <i class="fas fa-book dashboard-icon mr-3"></i>
+                    <div>
+                        <div class="dashboard-title">Manage Subjects</div>
+                        <a th:href="@{/faculty/manage-subjects}" class="stretched-link text-dark"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

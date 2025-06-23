@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/base :: layout(~{::section}, 'Edit Subject')}">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<section class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg p-4" style="background-color: #f0f8ff; border-radius: 1rem;">
+                <h3 class="text-center text-primary mb-4">Edit Subject</h3>
+
+                <div th:if="${success}" class="alert alert-success text-center" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-danger text-center" th:text="${error}"></div>
+
+                <form th:action="@{'/admin/api/edit-subject/' + ${subject.subjectCode}}" method="post">
+                    <input type="hidden" name="_method" value="put" />
+
+                    <div class="form-group">
+                        <label>Subject Code</label>
+                        <input type="text" name="subjectCode" class="form-control" th:value="${subject.subjectCode}" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Subject Name</label>
+                        <input type="text" name="subjectName" class="form-control" th:value="${subject.subjectName}" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Course</label>
+                        <select name="courseId" class="form-control">
+                            <option th:each="course : ${courses}"
+                                    th:value="${course.id}"
+                                    th:text="${course.courseName}"
+                                    th:selected="${course.id} == ${subject.course.id}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Faculty</label>
+                        <select name="facultyId" class="form-control">
+                            <option th:each="faculty : ${faculties}"
+                                    th:value="${faculty.id}"
+                                    th:text="${faculty.name}"
+                                    th:selected="${faculty.id} == ${subject.faculty.id}"></option>
+                        </select>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success px-4">Update</button>
+                        <a th:href="@{/admin/manage-subjects}" class="btn btn-secondary ml-2">Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

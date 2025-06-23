@@ -2,14 +2,19 @@ package com.performance.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.performance.dao.CourseRepository;
 import com.performance.dao.FacultyRepository;
@@ -34,8 +40,11 @@ import com.performance.helper.RegisterRequest;
 import com.performance.helper.RegisterStudentRequest;
 import com.performance.helper.RegisterSubjectRequest;
 
-@RestController
-@RequestMapping("/admin")
+import jakarta.validation.Valid;
+
+@Controller
+@PreAuthorize("hasRole('ADMIN')")
+@RequestMapping("/admin/api")
 public class AdminController {
 	
 	@Autowired
@@ -52,15 +61,19 @@ public class AdminController {
 	 @Autowired
 	    private SubjectRepository subjectRepository;
 
+	 
+	 
 	
 	//----------------------------------------------COURSE CRUD OPERATION BY ADMIN-------------------------------------
 	//Add new Course
 	@PostMapping("/add-course")
-	public ResponseEntity<String> addCourse(@RequestBody CourseRequest req){
+	public String addCourse(@ModelAttribute("course") CourseRequest req,RedirectAttributes redirectAttributes,Model mode){
 		
 		Optional<Faculty> optionalFaculty = facultyRepository.findById(req.getFacultyId());
         if (optionalFaculty.isEmpty()) {
-            return ResponseEntity.badRequest().body("Faculty not found with ID: " + req.getFacultyId());
+        	 redirectAttributes.addFlashAttribute("error", "Faculty not found with ID: " + req.getFacultyId());
+             return "redirect:/admin/add-course";
+            //return ResponseEntity.badRequest().body("Faculty not found with ID: " + req.getFacultyId());
         }
 
         Course course = new Course();
@@ -71,16 +84,20 @@ public class AdminController {
 
         courseRepository.save(course);
 
-        return ResponseEntity.ok("Course added successfully");
+        redirectAttributes.addFlashAttribute("success", "Course added successfully!");
+        return "redirect:/admin/add-course";
+        //return ResponseEntity.ok("Course added successfully");
 	}
 	//Edit course
-	@PutMapping("/edit-course/{courseCode}")
-	public ResponseEntity<String> editCourse(@PathVariable String courseCode, @RequestBody CourseRequest req) {
+	@PostMapping("/edit-course/{courseCode}")
+	public String editCourse(@PathVariable String courseCode, @ModelAttribute("course") CourseRequest req,RedirectAttributes redirectAttributes) {
 
 	    Optional<Course> optionalCourse = courseRepository.findByCourseCode(courseCode);
 
 	    if (optionalCourse.isEmpty()) {
-	        return ResponseEntity.badRequest().body("Course not found with code: " + courseCode);
+	    	 redirectAttributes.addFlashAttribute("error", "Course not found");
+	         return "redirect:/admin/manage-courses";
+	        //return ResponseEntity.badRequest().body("Course not found with code: " + courseCode);
 	    }
 
 	    Course course = optionalCourse.get();
@@ -94,26 +111,35 @@ public class AdminController {
 	        if (optionalFaculty.isPresent()) {
 	            course.setFaculty(optionalFaculty.get());
 	        } else {
-	            return ResponseEntity.badRequest().body("Faculty with ID not found: " + req.getFacultyId());
+	        	redirectAttributes.addFlashAttribute("error", "Faculty is not found..");
+	        	return "redirect:/admin/manage-courses";
+	            //return ResponseEntity.badRequest().body("Faculty with ID not found: " + req.getFacultyId());
 	        }
 	    }
 
 	    courseRepository.save(course);
-	    return ResponseEntity.ok("Course updated successfully");
+	    redirectAttributes.addFlashAttribute("success", "Course updated successfully");
+	    return "redirect:/admin/manage-courses";
+	    //return ResponseEntity.ok("Course updated successfully");
 	}
 
-	@DeleteMapping("/delete-course/{courseCode}")
-	public ResponseEntity<String> deleteCourse(@PathVariable String courseCode) {
+	@GetMapping("/delete-course/{courseCode}")
+	public String deleteCourse(@PathVariable String courseCode,RedirectAttributes redirectAttributes) {
 
 	    Optional<Course> optionalCourse = courseRepository.findByCourseCode(courseCode);
 
 	    if (optionalCourse.isEmpty()) {
-	        return ResponseEntity.badRequest().body("Course not found with code: " + courseCode);
+	        
+	    	redirectAttributes.addFlashAttribute("error","Course not found with code: " + courseCode );
+		    return "redirect:/admin/manage-courses";
+	    	//return ResponseEntity.badRequest().body("Course not found with code: " + courseCode);
 	    }
 
 	    courseRepository.delete(optionalCourse.get());
-
-	    return ResponseEntity.ok("Course deleted successfully");
+	    redirectAttributes.addFlashAttribute("success", "Course deleted successfully");
+	    return "redirect:/admin/manage-courses";
+	    
+	    //return ResponseEntity.ok("Course deleted successfully");
 	}
 
 	
@@ -121,30 +147,44 @@ public class AdminController {
 	
 	//  Add a subject
     @PostMapping("/add-subject")
-    public ResponseEntity<?> addSubject(@RequestBody RegisterSubjectRequest req) {
+    public String addSubject(@ModelAttribute RegisterSubjectRequest req,RedirectAttributes redirectAttributes) {
     	Subject subject=new Subject();
     	subject.setSubjectCode(req.subjectCode);
     	subject.setSubjectName(req.subjectName);
     	Optional<Course> optionalCourse = courseRepository.findById(req.getCourseId());
-    	if (optionalCourse.isEmpty()) return ResponseEntity.badRequest().body("Course not found");
+    	if (optionalCourse.isEmpty())
+    		{ 
+    		    redirectAttributes.addFlashAttribute("error","course not found");
+    		    return "redirect:/admin/add-subject";
+    		}
         else subject.setCourse(optionalCourse.get());
         
         Optional<Faculty> optionalFaculty = facultyRepository.findById(req.getFacultyId());
-        if (optionalFaculty.isEmpty()) return ResponseEntity.badRequest().body("Faculty not found");
+        if (optionalFaculty.isEmpty())
+        	{
+        	redirectAttributes.addFlashAttribute("error","Faculty not found");
+		    return "redirect:/admin/add-subject";
+        	//return ResponseEntity.badRequest().body("Faculty not found");
+		    }
         else subject.setFaculty(optionalFaculty.get());
         
     	
         subjectRepository.save(subject);
-        return ResponseEntity.ok("Subject added successfully");
+        redirectAttributes.addFlashAttribute("success","Subject added successfully");
+	    return "redirect:/admin/add-subject";
+        //return ResponseEntity.ok("Subject added successfully");
     }
 
     
     //  Edit a subject by subject code
-    @PutMapping("/edit-subject/{subjectCode}")
-    public ResponseEntity<?> editSubject(@PathVariable String subjectCode, @RequestBody RegisterSubjectRequest req) {
+    @PostMapping("/edit-subject/{subjectCode}")
+    public String editSubject(@PathVariable String subjectCode, @ModelAttribute RegisterSubjectRequest req,RedirectAttributes redirectAttributes) {
         Optional<Subject> optionalSubject = subjectRepository.findBySubjectCode(subjectCode);
-        if (optionalSubject.isEmpty()) return ResponseEntity.badRequest().body("Subject not found");
-
+        if (optionalSubject.isEmpty()) {
+        	 redirectAttributes.addFlashAttribute("error", "Subject not found");
+             return "redirect:/admin/manage-subjects";
+        	//return ResponseEntity.badRequest().body("Subject not found");
+        }
         
         Subject subject = optionalSubject.get();
         
@@ -153,42 +193,66 @@ public class AdminController {
         
         if(req.getCourseId()!=0) {
         Optional<Course> optionalCourse = courseRepository.findById(req.getCourseId());
-        if (optionalCourse.isEmpty()) return ResponseEntity.badRequest().body("Course not found");
+        if (optionalCourse.isEmpty()) 
+        	{
+        	 redirectAttributes.addFlashAttribute("error", "Course not found");
+             return "redirect:/admin/manage-subjects";
+        	//return ResponseEntity.badRequest().body("Course not found");
+        	
+        	}
         else subject.setCourse(optionalCourse.get());
         }
         if(req.getFacultyId()!=0) {
         Optional<Faculty> optionalFaculty = facultyRepository.findById(req.getFacultyId());
-        if (optionalFaculty.isEmpty()) return ResponseEntity.badRequest().body("Faculty not found");
+        if (optionalFaculty.isEmpty())
+        	{//return ResponseEntity.badRequest().body("Faculty not found");
+        	 redirectAttributes.addFlashAttribute("error", "Faculty not found");
+             return "redirect:/admin/manage-subjects";
+        	}
         else subject.setFaculty(optionalFaculty.get());
         }
    
 
         subjectRepository.save(subject);
-        return ResponseEntity.ok("Subject updated successfully");
+        redirectAttributes.addFlashAttribute("success", "Subject updated successfully");
+        return "redirect:/admin/manage-subjects";
+        //return ResponseEntity.ok("Subject updated successfully");
     }
 
  // Delete a subject by subject code
-    @DeleteMapping("/delete-subject/{subjectCode}")
-    public ResponseEntity<?> deleteSubject(@PathVariable String subjectCode) {
+    @GetMapping("/delete-subject/{subjectCode}")
+    public String deleteSubject(@PathVariable String subjectCode,RedirectAttributes redirectAttributes) {
         Optional<Subject> optionalSubject = subjectRepository.findBySubjectCode(subjectCode);
-        if (optionalSubject.isEmpty()) return ResponseEntity.badRequest().body("Subject not found");
+        if (optionalSubject.isEmpty())
+        {
+        	redirectAttributes.addFlashAttribute("error", "Subject not found");
+        	//return ResponseEntity.badRequest().body("Subject not found");
+        }
+        else {
         subjectRepository.delete(optionalSubject.get());
-        return ResponseEntity.ok("Subject deleted successfully");
+        redirectAttributes.addFlashAttribute("success", "Subject deleted successfully....");
+        }
+        return "redirect:/admin/manage-subjects";
+        //return ResponseEntity.ok("Subject deleted successfully");
     }
 	
 	//------------------------------------------STUDENT CRUD OPERATION BY ADMIN ---------------------------
 	
 	// Register Student
     @PostMapping("/register-student")
-    public ResponseEntity<?> registerStudent(@RequestBody RegisterStudentRequest request) {
+    public String registerStudent(@ModelAttribute RegisterStudentRequest request,RedirectAttributes redirectAttributes) {
         if (userRepository.findByUsername(request.username).isPresent()) {
-            return ResponseEntity.badRequest().body("Username already exists");
+        	 redirectAttributes.addFlashAttribute("error", "Username already exists");
+             return "redirect:/admin/register-student";
+        	//return ResponseEntity.badRequest().body("Username already exists");
         }
 
      // Find course by courseCode
         Optional<Course> optionalCourse = courseRepository.findByCourseCode(request.courseCode);
         if (optionalCourse.isEmpty()) {
-            return ResponseEntity.badRequest().body("Course not found with code: " + request.courseCode);
+        	redirectAttributes.addFlashAttribute("error", "Course not found");
+            return "redirect:/admin/register-student";
+        	//return ResponseEntity.badRequest().body("Course not found with code: " + request.courseCode);
         }
         
         User user = new User();
@@ -208,18 +272,23 @@ public class AdminController {
         student.setAcademicClass(request.academicClass);
 
         studentRepository.save(student);
-
-        return ResponseEntity.ok("Student registered successfully");
+        redirectAttributes.addFlashAttribute("success", "Student registered successfully");
+        return "redirect:/admin/register-student";
+       // return ResponseEntity.ok("Student registered successfully");
     }
     
     
     //Editing student data
-    @PutMapping("/edit-student/{rollNumber}")
-    public ResponseEntity<String> editStudent(@PathVariable String rollNumber,@RequestBody RegisterStudentRequest req)
+    @PostMapping("/edit-student/{rollNumber}")
+    public String editStudent(@PathVariable String rollNumber,@ModelAttribute RegisterStudentRequest req,RedirectAttributes redirectAttributes)
     {
     	Optional<Student> ostudent = studentRepository.findByRollNumber(rollNumber);
     	if(!ostudent.isPresent())
-    		return ResponseEntity.badRequest().body("Student not found with roll number :"+rollNumber);
+    	{
+    		 redirectAttributes.addFlashAttribute("error", "Student not found with roll number: " + rollNumber);
+    	        return "redirect:/admin/manage-students";
+    		//return ResponseEntity.badRequest().body("Student not found with roll number :"+rollNumber);
+    	}
     	
     	Student student =ostudent.get();
     	if (req.name!=null) student.setName(req.name);
@@ -241,22 +310,30 @@ public class AdminController {
         if (req.courseCode != null) {
             Optional<Course> optionalCourse = courseRepository.findByCourseCode(req.courseCode);
             if (optionalCourse.isEmpty())
-                return ResponseEntity.badRequest().body("Course not found with code: " + req.courseCode);
+            {
+            	 redirectAttributes.addFlashAttribute("error", "Course not found with code: " + req.courseCode);
+     	        return "redirect:/admin/manage-students";
+                //return ResponseEntity.badRequest().body("Course not found with code: " + req.courseCode);
+            }
             student.setCourse(optionalCourse.get());
         }
     	studentRepository.save(student);
     	
-    	return ResponseEntity.ok("Student updated successfully");
+    	 redirectAttributes.addFlashAttribute("success", "Student updated successfully");
+    	    return "redirect:/admin/manage-students";
+    	//return ResponseEntity.ok("Student updated successfully");
     }
     	//Deleting student data
-    	@DeleteMapping("/delete-student/{rollNumber}")
-    	public ResponseEntity<String> deleteStudent(@PathVariable String rollNumber){
+    	@GetMapping("/delete-student/{rollNumber}")
+    	public String deleteStudent(@PathVariable String rollNumber,RedirectAttributes redirectAttributes){
     		
     		Optional<Student> optionalstudent = studentRepository.findByRollNumber(rollNumber);
     		
-    		if(optionalstudent.isEmpty())
-    			return ResponseEntity.badRequest().body("Student not found with roll number : "+rollNumber);
-    		
+    		if(optionalstudent.isEmpty()) {
+    			 redirectAttributes.addFlashAttribute("error", "Student not found with roll number: " + rollNumber);
+    		        return "redirect:/admin/manage-students";
+    			//return ResponseEntity.badRequest().body("Student not found with roll number : "+rollNumber);
+    		}
     		Student student=optionalstudent.get();
     		
     		User user=student.getUser();
@@ -265,8 +342,9 @@ public class AdminController {
     		if(user!=null)
     			userRepository.delete(user);
     		
-    		
-    		return ResponseEntity.ok("Student deleted successfully");
+    		redirectAttributes.addFlashAttribute("success", "Student deleted successfully");
+    	    return "redirect:/admin/manage-students";
+    		//return ResponseEntity.ok("Student deleted successfully");
     	}
     	
     	//      UPDATING SEMESTER OF STUDENT
@@ -285,15 +363,22 @@ public class AdminController {
     	 
     	//  Assign subjects to student
     	 
-    	    @PutMapping("/assign-subjects-to-student/{rollNumber}")
-    	    public ResponseEntity<?> assignSubjectsToStudent(@PathVariable String rollNumber,
-    	                                                     @RequestBody List<Integer> subjectIds) {
+    	    @PostMapping("/assign-subjects-to-student/{rollNumber}")
+    	    public String assignSubjectsToStudent(@PathVariable String rollNumber,
+    	                                                     @RequestParam List<Integer> subjectIds,RedirectAttributes redirectAttributes) {
     	        Optional<Student> studentOpt = studentRepository.findByRollNumber(rollNumber);
-    	        if (studentOpt.isEmpty()) return ResponseEntity.badRequest().body("Student not found");
+    	        if (studentOpt.isEmpty()) {
+    	        	redirectAttributes.addFlashAttribute("error", "Student not found");
+    	            return "redirect:/admin/manage-students";
+    	        	//return ResponseEntity.badRequest().body("Student not found");
+    	        }
 
     	        Student student = studentOpt.get();
-    	        List<Subject> subjects = subjectRepository.findAllById(subjectIds);
     	        List<Subject> oldSubjects= student.getSubjects();
+    	        subjectIds=subjectIds.stream().filter(id->!(oldSubjects.contains(subjectRepository.findById(id).get()))).collect(Collectors.toList());
+    	        List<Subject> subjects = subjectRepository.findAllById(subjectIds);
+    	        //List<Subject> oldSubjects= student.getSubjects();
+    	        subjects.forEach(sub->sub.setCourse(student.getCourse()));
     	        if(oldSubjects==null)
     	             student.setSubjects(subjects);
     	        else
@@ -301,18 +386,50 @@ public class AdminController {
     	        	oldSubjects.addAll(subjects);
     	        }
     	        studentRepository.save(student);
-    	        return ResponseEntity.ok("Subjects assigned to student successfully");
+    	        redirectAttributes.addFlashAttribute("success", "Subjects assigned successfully");
+
+    	        return "redirect:/admin/manage-students";
+    	        //return ResponseEntity.ok("Subjects assigned to student successfully");
     	    }
+    	    
+    	    @PostMapping("/delete-subjects/{rollNumber}")
+    	    public String deleteSubjectsFromStudent(@PathVariable String rollNumber,
+    	                                            @RequestParam(name = "subjectIds", required = false) List<Integer> subjectIds,
+    	                                            RedirectAttributes redirectAttributes) {
+    	        Optional<Student> studentOpt = studentRepository.findByRollNumber(rollNumber);
+    	        if (studentOpt.isEmpty()) {
+    	            redirectAttributes.addFlashAttribute("error", "Student not found");
+    	            return "redirect:/admin/manage-students";
+    	        }
+
+    	        Student student = studentOpt.get();
+    	        List<Subject> subjects = student.getSubjects();
+
+    	        if (subjectIds != null && !subjectIds.isEmpty()) {
+    	            subjects.removeIf(subject -> subjectIds.contains(subject.getId()));
+    	            student.setSubjects(subjects);
+    	            studentRepository.save(student);
+    	            redirectAttributes.addFlashAttribute("success", "Selected subjects deleted successfully.");
+    	        } else {
+    	            redirectAttributes.addFlashAttribute("warning", "No subjects selected for deletion.");
+    	        }
+
+    	        return "redirect:/admin/manage-students";
+    	    }
+
     	 
     	
     //------------------------------------------FACULTY OPERATIONS--------------------------------------	
     	// Register Faculty
         @PostMapping("/register-faculty")
-        public ResponseEntity<?> registerFaculty(@RequestBody RegisterFacultyRequest request) {
+        public String registerFaculty(@Valid @ModelAttribute("faculty") RegisterFacultyRequest request,Model model,BindingResult result) {
             if (userRepository.findByUsername(request.username).isPresent()) {
-                return ResponseEntity.badRequest().body("Username already exists");
+                //return ResponseEntity.badRequest().body("Username already exists");
+            	result.rejectValue("username", null,"Username already exists");
             }
-
+            if (result.hasErrors()) {
+                return "admin/add_faculty";
+            }
             User user = new User();
             user.setUsername(request.username);
             user.setPassword(passwordEncoder.encode(request.password));
@@ -329,23 +446,32 @@ public class AdminController {
 
             facultyRepository.save(faculty);
 
-            return ResponseEntity.ok("Faculty registered successfully");
+            //return ResponseEntity.ok("Faculty registered successfully");
+            model.addAttribute("success", "Faculty registered successfully");
+            model.addAttribute("faculty", new RegisterFacultyRequest()); // reset form
+            return "admin/add_faculty";
         }
     	
     //Editing faculty data
-    	@PutMapping("/edit-faculty/{username}")
-    	public ResponseEntity<String> editFaculty(@PathVariable String username,@RequestBody RegisterFacultyRequest req)
+    	@PostMapping("/edit-faculty/{username}")
+    	public String editFaculty(@PathVariable String username,@ModelAttribute("faculty") RegisterFacultyRequest req,RedirectAttributes redirectAttributes)
     	{
     		Optional<User> optionalUser = userRepository.findByUsername(username);
-    		if(optionalUser.isEmpty())
-    			return ResponseEntity.badRequest().body("No faculty with username : "+username);
+    		if(optionalUser.isEmpty()) {
+    			redirectAttributes.addFlashAttribute("error", "No faculty with username : "+username);
+    			return "redirect:/admin/edit-faculty-form/{username}";
+    			//return ResponseEntity.badRequest().body("No faculty with username : "+username);
+    		}
     		
     		User user=optionalUser.get();
     		
     		Faculty faculty=facultyRepository.findAll().stream().filter(f->f.getUser().getId()==user.getId()).findFirst().orElse(null);
     		
-    		if(faculty==null)
-    			return ResponseEntity.badRequest().body("No faculty with username : "+username);
+    		if(faculty==null) {
+    			redirectAttributes.addFlashAttribute("error", "No faculty with username : "+username);
+    			return "redirect:/admin/edit-faculty-form/{username}";
+    			//return ResponseEntity.badRequest().body("No faculty with username : "+username);
+    		}
     		
     		
     		if (req.username != null) user.setUsername(req.username);
@@ -361,19 +487,21 @@ public class AdminController {
     	    faculty.setUser(user);
     	    facultyRepository.save(faculty);
 
-    	    
-    	    return ResponseEntity.ok("Faculty updated successfully");
+    	    redirectAttributes.addFlashAttribute("success", username+"is updated");
+    	    return "redirect:/admin/manage-faculties";
     		
     		
     	}
     	
     	//Delete faculty data
-    	@DeleteMapping("/delete-faculty/{username}")
-    	public ResponseEntity<String> deleteFaculty(@PathVariable String username) {
+    	@GetMapping("/delete-faculty/{username}")
+    	public String deleteFaculty(@PathVariable String username,RedirectAttributes redirectAttributes) {
 
     	    Optional<User> userOptional = userRepository.findByUsername(username);
     	    if (userOptional.isEmpty()) {
-    	        return ResponseEntity.badRequest().body("Faculty with username not found: " + username);
+    	    	redirectAttributes.addFlashAttribute("error","Faculty with username not found: " + username);
+    	    	return "redirect:/admin/manage-faculties";
+    	       // return ResponseEntity.badRequest().body("Faculty with username not found: " + username);
     	    }
 
     	    User user = userOptional.get();
@@ -386,22 +514,29 @@ public class AdminController {
     	        .orElse(null);
 
     	    if (faculty == null) {
-    	        return ResponseEntity.badRequest().body("No faculty entity linked to username: " + username);
+    	    	redirectAttributes.addFlashAttribute("error","Faculty with username not found: " + username);
+    	    	return "redirect:/admin/manage-faculties";
+    	        //return ResponseEntity.badRequest().body("No faculty entity linked to username: " + username);
     	    }
 
     	    // First delete faculty to avoid FK violation
     	    facultyRepository.delete(faculty);
     	    userRepository.delete(user);
-
-    	    return ResponseEntity.ok("Faculty deleted successfully.");
+    	    redirectAttributes.addFlashAttribute("success","Faculty deleted successfully... " + username);
+	    	return "redirect:/admin/manage-faculties";
+    	    //return ResponseEntity.ok("Faculty deleted successfully.");
     	}
 
     	//  Assign subjects to faculty
-        @PutMapping("/assign-subjects-to-faculty/{facultyId}")
-        public ResponseEntity<?> assignSubjectsToFaculty(@PathVariable int facultyId,
-                                                         @RequestBody List<Integer> subjectIds) {
+        @PostMapping("/assign-subjects-to-faculty/{facultyId}")
+        public String assignSubjectsToFaculty(@PathVariable("facultyId") int facultyId,
+                                                         @RequestParam("subjectIds") List<Integer> subjectIds,RedirectAttributes redirectAttributes) {
             Optional<Faculty> facultyOpt = facultyRepository.findById(facultyId);
-            if (facultyOpt.isEmpty()) return ResponseEntity.badRequest().body("Faculty not found");
+            if (facultyOpt.isEmpty()) {
+            	redirectAttributes.addFlashAttribute("error", "Faculty not found");
+            return "redirect:/admin/manage-faculties";
+            }
+            //return ResponseEntity.badRequest().body("Faculty not found");
 
             Faculty faculty = facultyOpt.get();
             List<Subject> subjects = subjectRepository.findAllById(subjectIds);
@@ -410,8 +545,9 @@ public class AdminController {
                 subject.setFaculty(faculty);
             }
             subjectRepository.saveAll(subjects);
-
-            return ResponseEntity.ok("Subjects assigned to faculty successfully");
+            redirectAttributes.addFlashAttribute("success", "Subjects assigned successfully");
+            return "redirect:/admin/manage-faculties";
+            //return ResponseEntity.ok("Subjects assigned to faculty successfully");
         }
         
 

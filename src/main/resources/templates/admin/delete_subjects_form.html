@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/base :: layout(~{::section}, 'Delete Subjects')}">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<section class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow p-4">
+                <h4 class="text-center text-danger mb-4">Delete Subjects from Student</h4>
+
+                <form th:action="@{'/admin/api/delete-subjects/' + ${student.rollNumber}}" method="post">
+                    <div class="form-group">
+                        <label>Roll Number:</label>
+                        <input type="text" th:value="${student.rollNumber}" class="form-control" readonly />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Select Subjects to Delete:</label>
+                        <div th:each="subject : ${subjects}" class="form-check">
+                            <input type="checkbox" class="form-check-input" name="subjectIds"
+                                   th:id="${'subject_' + subject.id}" th:value="${subject.id}" />
+                            <label class="form-check-label" th:for="${'subject_' + subject.id}"
+                                   th:text="${subject.subjectName + ' (' + subject.subjectCode + ')'}"></label>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-danger">Delete Selected</button>
+                        <a th:href="@{/admin/manage-students}" class="btn btn-secondary ml-2">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

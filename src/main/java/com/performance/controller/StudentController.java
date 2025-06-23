@@ -30,7 +30,7 @@ import com.performance.entities.User;
 import com.performance.helper.RegisterParticipationRequest;
 
 @RestController
-@RequestMapping("/student")
+@RequestMapping("/student/api")
 public class StudentController {
 
 	@Autowired

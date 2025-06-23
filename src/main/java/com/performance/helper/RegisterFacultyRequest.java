@@ -1,10 +1,19 @@
 package com.performance.helper;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 public class RegisterFacultyRequest {
+	@NotBlank(message = "Username is required")
 	public String username;
+	 @NotBlank(message = "Password is required")
     public String password;
-    public String name;
+	 public String name;
+    
+    @NotBlank(message = "Department is required")
     public String department;
+    @Email(message = "Invalid email address")
+    @NotBlank(message = "Email is required")
     public String email;
 	public String getUsername() {
 		return username;
