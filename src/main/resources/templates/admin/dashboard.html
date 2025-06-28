@@ -3,6 +3,9 @@
       th:replace="~{admin/base::layout(~{::section}, 'Admin Dashboard')}">
 <head>
     <title>Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+   
 </head>
 <body>
 <section>
@@ -11,59 +14,59 @@
             <p th:text="${message.content}"></p>
         </div>
 
-        <div class="row ">
+        <div class="row text-center">
             <!-- Course Card -->
-            <div class="col-md-3  p-3">
-                <div class="card text-center shadow-lg">
+            <div class="col-md-3 p-3">
+                <div class="card gradient-card shadow-lg">
                     <div class="card-body">
-                        <i class="fa-solid fa-book fa-3x mb-2 text-primary"></i>
-                        <h5 class="card-title">Courses</h5>
-                        <p class="card-text">Manage all courses offered.</p>
-                        <a th:href="@{/admin/manage-courses}" class="btn btn-outline-primary btn-sm">View</a>
+                        <i class="fa-solid fa-book dashboard-icon"></i>
+                        <h5 class="text-white">Courses</h5>
+                        <p>Manage all courses offered.</p>
+                        <a th:href="@{/admin/manage-courses}" class="btn btn-outline-light btn-sm">View</a>
                     </div>
                 </div>
             </div>
 
             <!-- Subject Card -->
             <div class="col-md-3 p-3">
-                <div class="card text-center">
-                    <div class="card-body" >
-                        <i class="fa-solid fa-book-open fa-3x mb-2 text-success"></i>
-                        <h5 class="card-title">Subjects</h5>
-                        <p class="card-text">Add or edit subjects.</p>
-                        <a th:href="@{/admin/manage-subjects}" class="btn btn-outline-success btn-sm">View</a>
+                <div class="card gradient-card shadow-lg">
+                    <div class="card-body">
+                        <i class="fa-solid fa-book-open dashboard-icon"></i>
+                        <h5 class="text-white">Subjects</h5>
+                        <p>Add or edit subjects.</p>
+                        <a th:href="@{/admin/manage-subjects}" class="btn btn-outline-light btn-sm">View</a>
                     </div>
                 </div>
             </div>
 
             <!-- Student Card -->
             <div class="col-md-3 p-3">
-                <div class="card text-center">
+                <div class="card gradient-card shadow-lg">
                     <div class="card-body">
-                        <i class="fa-solid fa-user-graduate fa-3x mb-2 text-warning"></i>
-                        <h5 class="card-title">Students</h5>
-                        <p class="card-text">Register and manage students.</p>
-                        <a th:href="@{/admin/manage-students}" class="btn btn-outline-warning btn-sm">View</a>
+                        <i class="fa-solid fa-user-graduate dashboard-icon"></i>
+                        <h5 class="text-white">Students</h5>
+                        <p>Register and manage students.</p>
+                        <a th:href="@{/admin/manage-students}" class="btn btn-outline-light btn-sm">View</a>
                     </div>
                 </div>
             </div>
 
             <!-- Faculty Card -->
             <div class="col-md-3 p-3">
-                <div class="card text-center">
+                <div class="card gradient-card shadow-lg">
                     <div class="card-body">
-                        <i class="fa-solid fa-chalkboard-teacher fa-3x mb-2 text-danger"></i>
-                        <h5 class="card-title">Faculty</h5>
-                        <p class="card-text">Manage faculty members.</p>
-                        <a th:href="@{/admin/manage-faculties}" class="btn btn-outline-danger btn-sm">View</a>
+                        <i class="fa-solid fa-chalkboard-teacher dashboard-icon"></i>
+                        <h5 class="text-white">Faculty</h5>
+                        <p>Manage faculty members.</p>
+                        <a th:href="@{/admin/manage-faculties}" class="btn btn-outline-light btn-sm">View</a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="text-center mt-4">
-            <h3 class="text-muted mt-3"><i>Welcome to the Admin Panel</i></h3>
-             <h4 class="text-muted" style="font-style: italic;">- A professional system for educational tracking.</h4>
+        <div class="text-center mt-5 welcome-message">
+            <h3 class="text-white"><i>Welcome to EduTrakPro Admin Panel</i></h3>
+            <h4 style="font-style: italic; color:white;">– A professional system for educational tracking.</h4>
         </div>
     </div>
 </section>

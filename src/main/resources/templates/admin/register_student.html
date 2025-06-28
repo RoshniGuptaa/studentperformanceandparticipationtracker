@@ -4,63 +4,88 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<section class="container mt-5">
+<section class="container mt-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card shadow-lg p-5" style="background-color: #f8f9fa; border-radius: 1rem;">
-                <h3 class="text-center text-primary mb-4">Register Student</h3>
+            <div class="card p-5" style="
+                background: rgba(255, 255, 255, 0.75);
+                border-radius: 12px;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.6);">
 
-                <div th:if="${success}" class="alert alert-success text-center" th:text="${success}"></div>
-                <div th:if="${error}" class="alert alert-danger text-center" th:text="${error}"></div>
+                <h3 class="text-center mb-4" style="
+                    color: #003366;
+                    font-weight: 700;
+                    font-size: 1.8rem;
+                    letter-spacing: 0.5px;">
+                    Register Student
+                </h3>
 
                 <form th:action="@{/admin/api/register-student}" method="post">
 
                     <div class="form-group">
-                        <label>Name</label>
+                        <label style="color: #222;"><strong>Name</strong></label>
                         <input type="text" name="name" class="form-control" required />
                     </div>
 
                     <div class="form-group">
-                        <label>Roll Number</label>
+                        <label style="color: #222;"><strong>Roll Number</strong></label>
                         <input type="text" name="rollNumber" class="form-control" required />
                     </div>
 
                     <div class="form-group">
-                        <label>Username</label>
+                        <label style="color: #222;"><strong>Username</strong></label>
                         <input type="text" name="username" class="form-control" required />
                     </div>
 
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" name="password" class="form-control" required />
+                    <div class="form-group position-relative">
+                        <label style="color: #222;"><strong>Password</strong></label>
+                        <input type="password" name="password" id="passwordField" class="form-control pr-5" required />
+                        <i id="togglePassword" class="fas fa-eye"
+                           style="position: absolute; top: 40px; right: 15px; color: #555; cursor: pointer;"></i>
                     </div>
 
                     <div class="form-group">
-                        <label>Semester</label>
+                        <label style="color: #222;"><strong>Semester</strong></label>
                         <input type="text" name="semester" class="form-control" required />
                     </div>
 
                     <div class="form-group">
-                        <label>Academic Class</label>
+                        <label style="color: #222;"><strong>Academic Class</strong></label>
                         <input type="text" name="academicClass" class="form-control" required />
                     </div>
 
                     <div class="form-group">
-                        <label>Course</label>
+                        <label style="color: #222;"><strong>Course</strong></label>
                         <select name="courseCode" class="form-control" required>
+                            <option value="" disabled selected>Select a course</option>
                             <option th:each="course : ${courses}" th:value="${course.courseCode}" th:text="${course.courseName}"></option>
                         </select>
                     </div>
 
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-success px-4">Register</button>
-                        <a th:href="@{/admin/manage-students}" class="btn btn-secondary ml-2">Back</a>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-secondary px-4 py-2 font-weight-bold">Register</button>
+                        <a th:href="@{/admin/manage-students}" class="btn btn-outline-dark ml-3 px-4 py-2">Back</a>
                     </div>
                 </form>
 
             </div>
         </div>
     </div>
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordField = document.getElementById("passwordField");
+
+    togglePassword.addEventListener("click", function () {
+        const isHidden = passwordField.type === "password";
+        passwordField.type = isHidden ? "text" : "password";
+        this.classList.toggle("fa-eye");
+        this.classList.toggle("fa-eye-slash");
+    });
+});
+</script>
+    
 </section>
+
 </body>
 </html>

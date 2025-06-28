@@ -6,12 +6,13 @@
 </head>
 <body>
 <section class="container mt-5">
-    <h2 class="text-center text-dark mb-4">Manage Faculties</h2>
-     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-    
+    <h2 class="text-center text-primary mb-4">Manage Faculties</h2>
+
+    <div th:if="${success}" class="alert alert-success font-weight-bold text-center" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger font-weight-bold text-center" th:text="${error}"></div>
+
     <div class="table-responsive">
-        <table class="table table-bordered table-hover text-center bg-white shadow">
+        <table class="table table-bordered table-hover text-center shadow bg-white" style="color: #222;">
             <thead class="thead-dark">
                 <tr>
                     <th>Username</th>
@@ -29,15 +30,16 @@
                     <td th:text="${faculty.email}"></td>
                     <td>
                         <a th:href="@{'/admin/edit-faculty-form/' + ${faculty.user.username}}" class="btn btn-sm btn-primary">Edit</a>
-                        <a th:href="@{'/admin/api/delete-faculty/' + ${faculty.user.username}}" 
-                           onclick="return confirm('Are you sure?')" 
+                        <a th:href="@{'/admin/api/delete-faculty/' + ${faculty.user.username}}"
+                           onclick="return confirm('Are you sure?')"
                            class="btn btn-sm btn-danger">Delete</a>
-                        <a th:href="@{'/admin/assign-subject-form/' + ${faculty.id}}" class="btn btn-sm btn-secondary">Assign Subjects</a>
+                        <a th:href="@{'/admin/assign-subject-form/' + ${faculty.id}}" class="btn btn-sm btn-outline-dark">Assign Subjects</a>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
+
     <!-- Pagination -->
     <nav>
         <ul class="pagination justify-content-center">

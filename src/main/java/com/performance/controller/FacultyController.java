@@ -3,6 +3,7 @@ package com.performance.controller;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,12 +15,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.performance.dao.AttendanceRepository;
 import com.performance.dao.CourseRepository;
@@ -35,9 +41,11 @@ import com.performance.entities.Performance;
 import com.performance.entities.Student;
 import com.performance.entities.Subject;
 import com.performance.entities.User;
+import com.performance.helper.AttendanceRequest;
+import com.performance.helper.RequestPerformance;
 
 @RestController
-@RequestMapping("/faculty")
+@RequestMapping("/faculty/api")
 public class FacultyController {
 
 	 @Autowired
@@ -60,26 +68,50 @@ public class FacultyController {
 	    @Autowired
 	    private PerformanceRepository performanceRepository;
 	    
+	//-----------------------------------------MARK ATTENDANCE-------------------------------------------------------------------    
+	    @GetMapping("/students-by-subject")
+	    @ResponseBody
+	    public List<Map<String, Object>> getStudentsBySubject(@RequestParam String subjectCode, Principal principal) {
+	        Optional<Subject> optionalSubject = subjectRepository.findBySubjectCode(subjectCode);
+	        if (optionalSubject.isEmpty()) {
+	            return Collections.emptyList();
+	        }
+
+	        Subject subject = optionalSubject.get();
+	        List<Student> students = studentRepository.findAll().stream()
+	            .filter(s -> s.getSubjects().contains(subject))
+	            .collect(Collectors.toList());
+
+	        return students.stream().map(s -> {
+	            Map<String, Object> map = new HashMap<>();
+	            map.put("id", s.getId());
+	            map.put("name", s.getName());
+	            map.put("rollNumber", s.getRollNumber());
+	            return map;
+	        }).collect(Collectors.toList());
+	    }
+
+//---------------------------------------MARK  ATTENDANCE -------------------------------------------------
 	    @PostMapping("/mark-attendance")
-	    public ResponseEntity<String> markAttendance(@RequestParam String rollNumber,
-	    		                                      @RequestParam String subjectCode,
-	    		                                      @RequestParam String status,
-	    		                                      @RequestParam @DateTimeFormat(iso=ISO.DATE) LocalDate date,Principal principal)
+	    public ResponseEntity<String> markAttendance(@RequestBody List<AttendanceRequest> attendanceRequests,Principal principal)
 	    {
 	    	
-	      Optional<Student> optionalStudent = studentRepository.findByRollNumber(rollNumber);
-	      
-	      if(optionalStudent.isEmpty())
-	    	  return ResponseEntity.badRequest().body("Invalid roll number");
-	      
-	      String facultyusername=principal.getName();
+	    	String facultyusername=principal.getName();
 	         User facultyUser=userRepository.findByUsername(facultyusername).get();
 	      Faculty faculty=facultyRepository.findByUserId(facultyUser.getId()).get();
 	      
 	      if(faculty==null)
 	    	  return ResponseEntity.badRequest().body("Unauthorized faculty");
 	      
-	      Optional<Subject> osubject=subjectRepository.findBySubjectCode(subjectCode);
+	      int attendancemarked=0;
+	      for(AttendanceRequest req:attendanceRequests) {
+	      Optional<Student> optionalStudent = studentRepository.findById(req.getStudentId());
+	      
+	      if(optionalStudent.isEmpty())
+	    	  return ResponseEntity.badRequest().body("Invalid roll number");
+	      
+	      
+	      Optional<Subject> osubject=subjectRepository.findBySubjectCode(req.getSubjectCode());
 	      if(osubject.isEmpty())
 	    	   return ResponseEntity.badRequest().body("Subject not found");
 	      
@@ -94,21 +126,27 @@ public class FacultyController {
 	      
 	      Course course=subject.getCourse();
 	      
+	     
+	      if(attendanceRepository.findByStudentIdAndSubjectIdAndDate(student.getId(), subject.getId(), req.getDate()).isPresent()) {
+	    	  attendancemarked++;
+	    	    continue;
+	    	  // return ResponseEntity.badRequest().body("Attendence already marked for the student");
+	      }
 	      Attendance attendance=new Attendance();
-	      if(attendanceRepository.findByStudentIdAndSubjectIdAndDate(student.getId(), subject.getId(), date).isPresent())
-	    	   return ResponseEntity.badRequest().body("Attendence already marked for the student");
 	      attendance.setStudent(student);
 	      attendance.setFaculty(faculty);
 	      attendance.setSubject(subject);
 	      attendance.setCourse(course);
-	      attendance.setDate(date);
-	      attendance.setStatus(status);
+	      attendance.setDate(req.getDate());
+	      attendance.setStatus(req.getStatus());
 	      attendanceRepository.save(attendance);
-	      
-	      return ResponseEntity.ok(optionalStudent.get().getRollNumber()+" attendance marked");
+	      }
+	      if(attendancemarked==attendanceRequests.size())
+	    	   return ResponseEntity.badRequest().body("attendance already marked...");
+	      return ResponseEntity.ok("Attendance submitted successfully ...");
 	      
 	    }
-	    
+//-------------------------------VIEW ATTENDANCE---------------------------------------------------------	    
 	    @GetMapping("/view-students-attendance/{subjectCode}")
 	    public ResponseEntity<?> studentsAttendancePercentage(@PathVariable("subjectCode") String subjectCode,Principal principal)
 	    {
@@ -159,10 +197,7 @@ public class FacultyController {
 	 //---------------------------ENTER MARKS -----------------------------------------------
 	 
 	 @PostMapping("enter-marks")
-	 public ResponseEntity<String> enterSubjectMarks(@RequestParam String rollNumber,
-			                                          @RequestParam String subjectCode,
-			                                          @RequestParam int marks,
-			                                          @RequestParam(required = false) String comments,Principal principal)
+	 public ResponseEntity<?> enterSubjectMarks(@RequestBody List<RequestPerformance> reqList,Principal principal)
 	 {
 		User  facultyUser =userRepository.findByUsername(principal.getName()).get() ;
 		 
@@ -172,15 +207,22 @@ public class FacultyController {
 	     
 	     Faculty faculty=optfaculty.get();
 	     
-	    Optional<Student> optStudent = studentRepository.findByRollNumber(rollNumber);
+	     int assigned = 0;
+	     int already = 0;
+	     int error = 0;
+	     List<String> alreadyAssignedStudents = new ArrayList<>();
+	     
+	     for(RequestPerformance req:reqList) {
+	    	 
+	    Optional<Student> optStudent = studentRepository.findByRollNumber(req.getRollNumber());
 	    if(optStudent.isEmpty())
-	    	 return ResponseEntity.badRequest().body("No Student found whith roll number :"+rollNumber);
+	    	 return ResponseEntity.badRequest().body("No Student found whith roll number :"+req.getRollNumber());
 	    
 	    Student student=optStudent.get();
 	    
-	    Optional<Subject> optSubject = subjectRepository.findBySubjectCode(subjectCode);
+	    Optional<Subject> optSubject = subjectRepository.findBySubjectCode(req.getSubjectCode());
 	    if(optSubject.isEmpty())
-	    	 return ResponseEntity.badRequest().body("No Subject found whith code :"+subjectCode);
+	    	 return ResponseEntity.badRequest().body("No Subject found whith code :"+req.getSubjectCode());
 	    
 	    Subject subject=optSubject.get();
 	    if(!student.getSubjects().contains(subject))
@@ -189,28 +231,85 @@ public class FacultyController {
 	    if(!(subject.getFaculty()==faculty))
 	    	return ResponseEntity.badRequest().body("Faculty not authorized for this subject.... ");
 	    
-	    if( performanceRepository.findByStudentIdAndSubjectId(student.getId(),subject.getId())!=null)
-	    	 return ResponseEntity.badRequest().body("Marks already assigned ...");
-	    
+	    if( performanceRepository.findByStudentIdAndSubjectId(student.getId(),subject.getId())!=null) {
+	    	
+	    	already++;
+	    	alreadyAssignedStudents.add(student.getName());
+	    	continue;
+	    	// return ResponseEntity.badRequest().body("Marks already assigned ...");
+	    }
 	    Performance performance=new Performance();
 	    
 	    performance.setStudent(student);
 	    performance.setFaculty(faculty);
 	    performance.setCourse(student.getCourse());
 	    performance.setSubject(subject);
-	    performance.setMarks(marks);
-	    performance.setComments(comments);
+	    performance.setMarks(req.getMarks());
+	    performance.setComments(req.getComments());
 	    
 	    performanceRepository.save(performance);
-	    
-	    return ResponseEntity.ok("Marks added successfully for student :"+student.getName());
+	    assigned++;
+	     }
+	     return ResponseEntity.ok(
+	    	        Map.of(
+	    	            "assigned", assigned,
+	    	            "already", already,
+	    	            "error", error,
+	    	            "alreadyAssignedStudents", alreadyAssignedStudents
+	    	        )
+	    	    );
+	    //return ResponseEntity.ok("Marks added successfully for student :"+student.getName());
 	     
 	 }
 	 
 	    
 	    
-	    
-	    
+	  //----------------------------------VIEW MARKS-----------------------------------------------------
+	 
+	 @GetMapping("/view-marks/{subjectCode}")
+	 public ResponseEntity<?> viewStudentMarks(@PathVariable("subjectCode")String subjectCode,Principal principal)
+	 {
+		 String facultyusername=principal.getName();
+		 
+		 User user =userRepository.findByUsername(facultyusername).get();
+		 if(user==null)
+			 return ResponseEntity.badRequest().body("User not found ");
+		
+		 Optional<Faculty> ofaculty=facultyRepository.findByUserId(user.getId());
+		 
+		 if(ofaculty.isEmpty())
+			 return ResponseEntity.badRequest().body("Faculty not found ");
+			
+		Optional<Subject> osubject=subjectRepository.findBySubjectCode(subjectCode);
+		if(osubject.isEmpty())
+			return ResponseEntity.badRequest().body("Subject not found ");
+		
+		Faculty faculty=ofaculty.get();
+		Subject subject=osubject.get();
+		
+		if(!(subject.getFaculty().getId()==faculty.getId()))
+		{
+			return ResponseEntity.badRequest().body("Faculty not authorized for this subject.. ");
+			
+			
+			
+		}
+		
+		List<Performance> performances=performanceRepository.findBySubjectId(subject.getId());
+		
+		 List<Map<String, Object>> results = new ArrayList<>();
+		    for (Performance perf : performances) {
+		        Map<String, Object> map = new HashMap<>();
+		        map.put("rollNumber", perf.getStudent().getRollNumber());
+		        map.put("name", perf.getStudent().getName());
+		        map.put("marks", perf.getMarks());
+		        map.put("comments", perf.getComments());
+		        results.add(map);
+		    }
+
+		    return ResponseEntity.ok(results);
+		
+	 }
 
 }
 

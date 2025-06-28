@@ -10,11 +10,14 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.performance.dao.AttendanceRepository;
 import com.performance.dao.ParticipationRepository;
@@ -29,7 +32,7 @@ import com.performance.entities.Subject;
 import com.performance.entities.User;
 import com.performance.helper.RegisterParticipationRequest;
 
-@RestController
+@Controller
 @RequestMapping("/student/api")
 public class StudentController {
 
@@ -47,24 +50,30 @@ public class StudentController {
 	
 	//-------------------------------------------------------------------------
 	@GetMapping("my-attendance-details")
-	public ResponseEntity<?> getSubjectWiseAttendancePercentage(Principal principal)
+	public String getSubjectWiseAttendancePercentage(Principal principal,RedirectAttributes redirectAttributes,Model model)
 	{
 		String studentUsername=principal.getName();
 		
 		Optional<User> optionalUser = userRepository.findByUsername(studentUsername);
 		
-		if(optionalUser.isEmpty())
-			return ResponseEntity.badRequest().body("Invalid Student credentials");
-		
+		if(optionalUser.isEmpty()) {
+			redirectAttributes.addFlashAttribute("error","Invalid student credentials");
+			//return ResponseEntity.badRequest().body("Invalid Student credentials");
+			return "student/attendance";
+		}
 		Optional<Student> optStudent = studentRepository.findByUserId(optionalUser.get().getId());
 		
-		if(optStudent.isEmpty())
-			return ResponseEntity.badRequest().body("Student not found ..");
-		
+		if(optStudent.isEmpty()) {
+			
+			redirectAttributes.addFlashAttribute("error","Student not found..");
+			return "student/attendance";
+			//return ResponseEntity.badRequest().body("Student not found ..");
+		}
 		Student student=optStudent.get();
 		
 		List<Subject> subjects=student.getSubjects();
-		
+		List<String> labels = new ArrayList<>();
+        List<Double> percentages = new ArrayList<>();
 		List<Map<String,Object>> result=new ArrayList<>();
 		
 		for(Subject subject:subjects)
@@ -76,37 +85,56 @@ public class StudentController {
 			double percentage=total==0?0.0:(present*100)/total;
 			percentage=Math.round(percentage*100)/100;
 			
+			labels.add(subject.getSubjectCode());
+            percentages.add(percentage);
 			Map<String,Object> subjectAttendance=new HashMap<>();
-			subjectAttendance.put("Subject Code", subject.getSubjectCode());
-			subjectAttendance.put("Subject Name", subject.getSubjectName());
-			subjectAttendance.put("Total Classes", total);
-			subjectAttendance.put("Attended Classes", present);
-			subjectAttendance.put("Attendance Percentage", percentage);
+			subjectAttendance.put("code", subject.getSubjectCode());
+			subjectAttendance.put("name", subject.getSubjectName());
+			subjectAttendance.put("totalClasses", total);
+			subjectAttendance.put("attendedClasses", present);
+			subjectAttendance.put("percentage", percentage);
 			
 			result.add(subjectAttendance);
 		}
-		return ResponseEntity.ok(result);
+		
+		 model.addAttribute("labels", labels);
+	        model.addAttribute("percentages", percentages);
+		model.addAttribute("attendanceData",result);
+		model.addAttribute("studentname",student.getName());
+		model.addAttribute("username",principal.getName());
+		return "student/attendance";
+		//return ResponseEntity.ok(result);
 		
 	}
 	
-	
+	//-----------------------------------------------VIEW RESULT----------------------
 	@GetMapping("/view-result")
-	public ResponseEntity<?> viewResult(Principal principal)
+	public String viewResult(Principal principal,RedirectAttributes redirectAttributes,Model model)
 	{
 		String username=principal.getName();
 		User studentUser=userRepository.findByUsername(username).get();
 		
-		if(studentUser==null)
-			return ResponseEntity.badRequest().body("Invalid student credentials");
-		
+		if(studentUser==null) {
+			redirectAttributes.addFlashAttribute("error","Invalid student credentials");
+			return "student/view_result";
+	// return ResponseEntity.badRequest().body("Invalid student credentials");
+		}
 		Student student = studentRepository.findByUserId(studentUser.getId()).orElseGet(null);
-		if(student==null)
-			return ResponseEntity.badRequest().body("Student not found...");
+		if(student==null) {
+			redirectAttributes.addFlashAttribute("error","Student not found...");
+			return "student/view_result";
+			//return ResponseEntity.badRequest().body("Student not found...");
+		}
 		
 		List<Performance> performances=performanceRepository.findByStudentId(student.getId());
 		
 		if(performances.isEmpty())
-			ResponseEntity.ok("No marks available yet ....");
+		{
+			model.addAttribute("noData", "No marks available yet.");
+            return "student/view-result";
+ 
+			//ResponseEntity.ok("No marks available yet ....");
+		}
 		
 		//Result generation
 		List<Map<String,Object>> result=new ArrayList<>();
@@ -124,24 +152,26 @@ public class StudentController {
 		
 		Map<String ,Object> resData=new HashMap<>();
 		
-		resData.put("Subject Name", performance.getSubject().getSubjectName());
-		resData.put("Subject code", performance.getSubject().getSubjectCode());
+		resData.put("SubjectName", performance.getSubject().getSubjectName());
+		resData.put("SubjectCode", performance.getSubject().getSubjectCode());
 		resData.put("Marks", marks);
 		resData.put("Grade", grade);
-		resData.put("Grade Point", gradePoint);
+		resData.put("GradePoint", gradePoint);
 		result.add(resData);
 		}
-		Map<String,Object> finalResult=new HashMap<>();
+		
 		
 		double cgpa=totalGradePoints/subjectCount;
 		cgpa=Math.round(cgpa*100)/100;
 		
-		finalResult.put("Student", student.getName());
-		finalResult.put("Roll Number", student.getRollNumber());
-		finalResult.put("CGPA", cgpa);
-		finalResult.put("Results", result);
+		model.addAttribute("StudentName", student.getName());
+		model.addAttribute("rollNumber", student.getRollNumber());
+		model.addAttribute("cgpa", cgpa);
+		model.addAttribute("results", result);
 		
-		return ResponseEntity.ok(finalResult);
+		
+		return "student/view_result";
+		//return ResponseEntity.ok(finalResult);
 	}
 	
 	private String calaculateGrade(int marks)
@@ -155,6 +185,7 @@ public class StudentController {
 	    else if (marks >= 40) return "D";
 	    else return "F";
 	}
+	
 	
 	private double getGradePoint(String grade)
 	{

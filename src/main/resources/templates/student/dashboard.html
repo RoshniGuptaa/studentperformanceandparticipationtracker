@@ -1,10 +1,45 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-<h1>WELCOME to student dashboard</h1>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{student/base :: layout(~{::body}, 'Student Dashboard')}">
+<body class="student-dashboard">
+
+    <!-- Background overlay -->
+    <div class="bg-overlay"></div>
+
+    <div class="container py-5 position-relative">
+        <div class="text-white mb-5">
+            <h2 class="display-4 font-weight-bold">Welcome back, <span th:text="${studentName}">Student</span> 👋</h2>
+            <p class="lead enhanced-text">Here’s a quick look at your performance and activities!</p>
+        </div>
+
+        <div class="row">
+            <!-- Attendance Card -->
+            <div class="col-md-4 mb-4">
+                <div class="glass-card">
+                    <h5><i class="fa-solid fa-calendar-check"></i> Attendance</h5>
+                    <p>View your subject-wise attendance details.</p>
+                    <a th:href="@{/student/api/my-attendance-details}" class="btn btn-outline-light btn-sm">Check Now</a>
+                </div>
+            </div>
+
+            <!-- Results Card -->
+            <div class="col-md-4 mb-4">
+                <div class="glass-card">
+                    <h5><i class="fa-solid fa-chart-line"></i> Results</h5>
+                    <p>Check your grades and calculate your CGPA.</p>
+                    <a th:href="@{/student/api/view-result}" class="btn btn-outline-light btn-sm">View Result</a>
+                </div>
+            </div>
+
+            <!-- Participation Card -->
+            <div class="col-md-4 mb-4">
+                <div class="glass-card">
+                    <h5><i class="fa-solid fa-medal"></i> Participation</h5>
+                    <p>Add or view your event participation history.</p>
+                    <a th:href="@{/student/view-participations}" class="btn btn-outline-light btn-sm">View Activities</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

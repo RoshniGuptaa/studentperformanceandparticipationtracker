@@ -21,7 +21,7 @@
 
     <div class="collapse navbar-collapse" id="navbarContent">
         <ul class="navbar-nav ml-auto text-uppercase">
-            <li class="nav-item"><a class="nav-link" th:href="@{/faculty/dashboard}">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/faculty/dashboard}">Home</a></li>
             <li class="nav-item"><a class="nav-link" th:href="@{/faculty/profile}" th:text="${username}">Profile</a></li>
             <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Logout</a></li>
         </ul>
@@ -37,7 +37,7 @@
     <a href="#attendanceSubmenu" class="item" data-toggle="collapse"><i class="fa-solid fa-calendar-check mr-2"></i>Attendance</a>
     <div class="collapse dropdown-sub" id="attendanceSubmenu">
         <a th:href="@{/faculty/mark-attendance}" class="item">Mark Attendance</a>
-        <a th:href="@{/faculty/view-subjects}" class="item">View Attendance</a>
+        <a th:href="@{/faculty/view-attendance}" class="item">View Attendance</a>
     </div>
 
     <a href="#performanceSubmenu" class="item" data-toggle="collapse"><i class="fa-solid fa-chart-bar mr-2"></i>Performance</a>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{faculty/base :: layout(~{::section}, 'View Marks')}">
+<head>
+    <meta charset="UTF-8">
+    <title>View Marks</title>
+    <style>
+        .overlay {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+<section>
+<section class="container overlay">
+    <h3 class="text-center text-primary mb-4">View Marks</h3>
+
+    <div class="form-group">
+        <label for="subjectSelect">Select Subject</label>
+        <select id="subjectSelect" class="form-control">
+            <option value="" disabled selected>Select</option>
+            <option th:each="subject : ${subjects}" th:value="${subject.subjectCode}" th:text="${subject.subjectName}"></option>
+        </select>
+    </div>
+
+    <div id="marksTableContainer" style="display:none;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Roll Number</th>
+                    <th>Name</th>
+                    <th>Marks</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody id="marksTableBody"></tbody>
+        </table>
+    </div>
+</section>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("subjectSelect").addEventListener("change", function () {
+        const subjectCode = this.value;
+        fetch(`/faculty/api/view-marks/${subjectCode}`)
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.getElementById("marksTableBody");
+                tbody.innerHTML = '';
+
+                data.forEach(item => {
+                    const row = `<tr>
+                        <td>${item.rollNumber}</td>
+                        <td>${item.name}</td>
+                        <td>${item.marks}</td>
+                        <td>${item.comments || ''}</td>
+                    </tr>`;
+                    tbody.innerHTML += row;
+                });
+
+                document.getElementById("marksTableContainer").style.display = "block";
+            });
+    });
+});
+</script>
+</section>
+
+
+</body>
+</html>

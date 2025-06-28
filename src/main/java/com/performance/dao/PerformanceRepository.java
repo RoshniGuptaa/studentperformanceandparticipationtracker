@@ -12,5 +12,5 @@ public interface PerformanceRepository extends JpaRepository<Performance, Intege
 
 	public Performance findByStudentIdAndSubjectId(int studentId,int subjectId);
 		
-
+   public List<Performance> findBySubjectId(int subjectId);
 }

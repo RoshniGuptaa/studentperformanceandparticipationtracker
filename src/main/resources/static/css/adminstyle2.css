@@ -1,0 +1,142 @@
+@charset "UTF-8";
+
+/* === GLOBAL BODY & BACKGROUND === */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    
+    background-size: cover;
+    min-height: 100vh;
+    color: #f4f6f8;
+}
+
+/* === NAVBAR === */
+.navbar {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* === SIDEBAR === */
+.sidebar {
+    background-color: rgba(15, 23, 42, 0.95);
+    min-height: 100vh;
+    width: 240px;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    z-index: 1000;
+    padding-top: 1rem;
+    color: #fff;
+}
+.sidebar .item {
+    display: block;
+    padding: 10px 15px;
+    font-size: 16px;
+    color: #f1f1f1;
+    transition: 0.3s;
+    border-radius: 4px;
+}
+.sidebar .item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #00bfff;
+}
+.dropdown-sub {
+    padding-left: 1rem;
+    
+}
+.bars {
+    font-size: 24px;
+    cursor: pointer;
+    color: #fff;
+}
+
+/* === MAIN CONTENT === */
+.content {
+    margin-left: 240px;
+    padding: 20px;
+    transition: 0.3s;
+}
+
+/* === CARDS (e.g., Dashboard & Forms) === */
+.card {
+    border: none;
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: rgba(255, 255, 255, 0.75);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+.card-body {
+    padding: 20px;
+}
+.gradient-card {
+   /* background: linear-gradient(to bottom right, #1f4e79, #3e8ed0, #6a11cb);*/
+    background: linear-gradient(to bottom , rgba(31, 78, 121, 0.6), rgba(62, 142, 208, 0.15), rgba(106, 17, 203, 0.8));
+    backdrop-filter: blur(6px);
+     
+    color: white;
+}
+
+/* === HEADINGS & TEXT === */
+h3, h4, h5, label, .card-text {
+    color: #222;
+}
+.text-primary {
+    color: #003366 !important;
+}
+
+/* === FORM STYLING === */
+.form-control {
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    color: #222;
+    background-color: #fff;
+}
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+/* === BUTTONS === */
+.btn {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.btn-primary {
+    background-color: #0066cc;
+    border: none;
+}
+.btn-outline-dark {
+    border: 1px solid #444;
+    color: #444;
+}
+.btn-outline-dark:hover {
+    background-color: #444;
+    color: #fff;
+}
+
+/* === TOGGLE PASSWORD ICON === */
+input[type="password"] + i {
+    position: absolute;
+    top: 40px;
+    right: 15px;
+    cursor: pointer;
+    color: #555;
+}
+.heading{
+	color: #003366;
+                    font-weight: 700;
+                    font-size: 1.8rem;
+                    letter-spacing: 0.5px
+}
+select.form-control {
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    height: auto; /* Ensures it fits content */
+    color: #222;
+    background-color: #fff;
+}

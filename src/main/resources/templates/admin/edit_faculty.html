@@ -11,36 +11,36 @@
             <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
             <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-            <div class="card shadow-lg p-4"
-                 style="background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(12px); border-radius: 1rem;">
-                <h3 class="text-center text-primary mb-4">Edit Faculty Details</h3>
+            <div class="card shadow-lg p-4">
+                
+                <h3 class="text-center heading mb-4">Edit Faculty Details</h3>
 
                 <form th:action="@{'/admin/api/edit-faculty/'+ ${faculty.username}}" method="post" th:object="${faculty}">
                     <!-- <input type="hidden" th:field="*{id}" /> -->
 
                     <div class="form-group">
-                        <label for="username">Username</label>
+                        <label for="username"><strong>Username</strong></label>
                         <input th:field="*{username}" type="text" class="form-control" id="username" readonly>
                         <div th:if="${#fields.hasErrors('username')}" class="text-danger" th:errors="*{username}"></div>
                     </div>
 
                     <div class="form-group mt-3">
-                        <label for="password">New Password (leave blank to keep unchanged)</label>
+                        <label for="password"><strong>New Password</strong> (leave blank to keep unchanged)</label>
                         <input th:field="*{password}" type="password" class="form-control" id="password">
                     </div>
 
                     <div class="form-group mt-3">
-                        <label for="name">Full Name</label>
+                        <label for="name"><strong>Full Name</strong></label>
                         <input th:field="*{name}" type="text" class="form-control" id="name" required>
                     </div>
 
                     <div class="form-group mt-3">
-                        <label for="department">Department</label>
+                        <label for="department"><strong>Department</strong></label>
                         <input th:field="*{department}" type="text" class="form-control" id="department" required>
                     </div>
 
                     <div class="form-group mt-3">
-                        <label for="email">Email</label>
+                        <label for="email">,<strong>Email</strong></label>
                         <input th:field="*{email}" type="email" class="form-control" id="email" required>
                     </div>
 

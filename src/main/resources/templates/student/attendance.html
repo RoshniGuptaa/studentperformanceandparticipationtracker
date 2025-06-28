@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{student/base :: layout(~{::body}, 'My Attendance')}">
+<head></head>
+<body class="student-dashboard">
+	<div class="bg-overlay"></div>
+		<div class="container my-5">
+			<div class="row justify-content-center">
+				<div class="col-md-10">
+					<div class="glass-card p-4">
+						<h3 class="text-center text-white mb-4">📊 My Attendance
+							Overview</h3>
+							
+							<canvas id="attendanceChart" width="400" height="200"></canvas>
+						<div class="table-responsive mt-4">
+							<table
+								class="table table-hover table-borderless text-white text-center "
+								id="attendanceTable">
+								
+								<thead>
+									<tr>
+										<th>Subject Code</th>
+										<th>Subject Name</th>
+										<th>Total Classes</th>
+										<th>Attended</th>
+										<th>Percentage</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="entry : ${attendanceData}">
+										<td th:text="${entry.code}">CS101</td>
+										<td th:text="${entry.name}">OOP</td>
+										<td th:text="${entry.totalClasses}">20</td>
+										<td th:text="${entry.attendedClasses}">18</td>
+										<td th:text="${entry.percentage + '%'}">90%</td>
+									</tr>
+								</tbody>					
+							</table>
+							<div th:if="${#lists.isEmpty(attendanceData)}"
+										class="text-center text-muted mt-3">No attendance
+										records found.</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script th:inline="javascript">
+    /*<![CDATA[*/
+    const labels = /*[[${labels}]]*/ [];
+    const data = /*[[${percentages}]]*/ [];
+
+    const ctx = document.getElementById('attendanceChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Attendance %',
+                data: data,
+                backgroundColor: data.map(p => p >= 75 ? '#34d399' : '#fca5a5'),
+                borderColor: '#fff',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'white'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        color: 'white'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: 'white'
+                    }
+                }
+            }
+        }
+    });
+    /*]]>*/
+</script>
+	
+</body>
+</html>

@@ -10,35 +10,35 @@
 <body>
 <section class="container d-flex justify-content-center align-items-center vh-100">
     <div class="card p-4 shadow-lg" style="width: 35rem; border-radius: 1rem;">
-        <h3 class="text-center text-info mb-4">Register New Faculty</h3>
+        <h3 class="text-center heading mb-4">Register New Faculty</h3>
 
         <div th:if="${success}" class="alert alert-success text-center" th:text="${success}"></div>
         <div th:if="${error}" class="alert alert-danger text-center" th:text="${error}"></div>
 
         <form th:action="@{/admin/api/register-faculty}" method="post" th:object="${faculty}">
             <div class="form-group mb-3">
-                <label for="username">Username</label>
+                <label for="username"><strong>Username</strong></label>
                 <input th:field="*{username}" type="text" class="form-control" id="username" placeholder="Enter username" required>
                 <div th:if="${#fields.hasErrors('username')}" class="text-danger mt-1" th:errors="*{username}"></div>
             </div>
 
             <div class="form-group mb-3">
-                <label for="password">Password</label>
+                <label for="password"><strong>Password</strong></label>
                 <input th:field="*{password}" type="password" class="form-control" id="password" placeholder="Enter password" required>
             </div>
 
             <div class="form-group mb-3">
-                <label for="name">Full Name</label>
+                <label for="name"><strong>Full Name</strong></label>
                 <input th:field="*{name}" type="text" class="form-control" id="name" placeholder="Enter full name" required>
             </div>
 
             <div class="form-group mb-3">
-                <label for="department">Department</label>
+                <label for="department"><strong>Department</strong></label>
                 <input th:field="*{department}" type="text" class="form-control" id="department" placeholder="Enter department" required>
             </div>
 
             <div class="form-group mb-4">
-                <label for="email">Email</label>
+                <label for="email"><strong>Email</strong></label>
                 <input th:field="*{email}" type="email" class="form-control" id="email" placeholder="Enter email address" required>
             </div>
 

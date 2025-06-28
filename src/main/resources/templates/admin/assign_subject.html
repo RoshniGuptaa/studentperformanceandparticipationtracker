@@ -7,42 +7,45 @@
 <body>
 <section class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg p-4"
-                 style="background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(10px); border-radius: 1rem;">
-                <h3 class="text-center text-primary mb-4">Assign Subjects to Faculty</h3>
+        <div class="col-md-10 col-lg-8">
+            <div class="card p-5">
+                <h3 class="text-center text-primary mb-4 font-weight-bold">Assign Subjects to Faculty</h3>
 
-                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                <div th:if="${success}" class="alert alert-success text-center font-weight-bold" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-danger text-center font-weight-bold" th:text="${error}"></div>
 
+                <!-- Faculty Details -->
                 <div class="mb-4 text-center">
-                    <h5 class="font-weight-bold">Faculty Details</h5>
-                    <p th:text="'Name: ' + ${faculty.name}"></p>
-                    <p th:text="'Username: ' + ${faculty.user.username}"></p>
-                    <p th:text="'Department: ' + ${faculty.department}"></p>
+                    <h5 class="font-weight-bold text-dark">Faculty Details</h5>
+                    <p th:text="'Name: ' + ${faculty.name}" class="text-secondary"></p>
+                    <p th:text="'Username: ' + ${faculty.user.username}" class="text-secondary"></p>
+                    <p th:text="'Department: ' + ${faculty.department}" class="text-secondary"></p>
                 </div>
 
-                <form th:action="@{'/admin/api/assign-subjects-to-faculty/'+${faculty.id}}" method="post">
+                <!-- Subject Assignment Form -->
+                <form th:action="@{'/admin/api/assign-subjects-to-faculty/' + ${faculty.id}}" method="post">
                     <input type="hidden" name="facultyId" th:value="${faculty.id}" />
+
                     <div class="form-group">
-                        <label class="form-label font-weight-bold mb-2">Select Subjects</label>
+                        <label class="font-weight-bold mb-2">Select Subjects</label>
                         <div class="row">
-                            <div class="col-6 mb-2" th:each="subject : ${subjects}">
+                            <div class="col-sm-6 mb-2" th:each="subject : ${subjects}">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="subjectIds"
                                            th:value="${subject.id}" th:id="'subject_' + ${subject.id}">
-                                    <label class="form-check-label" th:for="'subject_' + ${subject.id}"
+                                    <label class="form-check-label text-dark" th:for="'subject_' + ${subject.id}"
                                            th:text="${subject.subjectName}"></label>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Buttons -->
                     <div class="text-center mt-4">
-                        <button type="submit" class="btn btn-success px-4">Assign</button>
-                        <a th:href="@{/admin/manage-faculties}" class="btn btn-secondary ml-2">Back</a>
+                        <button type="submit" class="btn btn-primary px-4">Assign</button>
+                        <a th:href="@{/admin/manage-faculties}" class="btn btn-outline-dark ml-3 px-4">Back</a>
                     </div>
                 </form>
-
             </div>
         </div>
     </div>

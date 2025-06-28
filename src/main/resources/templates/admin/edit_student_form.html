@@ -9,26 +9,26 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-lg p-4">
-                <h3 class="text-center text-info mb-4">Edit Student</h3>
+                <h3 class="text-center heading mb-4">Edit Student</h3>
                 <form th:action="@{'/admin/api/edit-student/' + ${student.rollNumber}}" method="post">
                     <div class="form-group">
-                        <label>Name</label>
+                        <label><strong>Name</strong></label>
                         <input type="text" th:value="${student.name}" name="name" class="form-control" required/>
                     </div>
                     <div class="form-group">
-                        <label>Roll Number</label>
+                        <label><strong>Roll Number</strong></label>
                         <input type="text" th:value="${student.rollNumber}" name="rollNumber" class="form-control" required/>
                     </div>
                     <div class="form-group">
-                        <label>Username</label>
+                        <label><strong>Username</strong></label>
                         <input type="text" th:value="${student.user.username}" name="username" class="form-control" required/>
                     </div>
                     <div class="form-group">
-                        <label>Password (leave blank to keep unchanged)</label>
+                        <label><strong>Password</strong> (leave blank to keep unchanged)</label>
                         <input type="password" name="password" class="form-control"/>
                     </div>
                     <div class="form-group">
-                        <label>Course</label>
+                        <label><strong>Course</strong></label>
                         <select name="courseCode" class="form-control">
                             <option th:each="course : ${courses}" th:value="${course.courseCode}"
                                     th:selected="${course.courseCode == student.course.courseCode}"
@@ -37,16 +37,16 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Semester</label>
+                        <label><strong>Semester</strong></label>
                         <input type="text" th:value="${student.semester}" name="semester" class="form-control" required/>
                     </div>
                     <div class="form-group">
-                        <label>Class</label>
+                        <label><strong>Class</strong></label>
                         <input type="text" th:value="${student.academicClass}" name="academicClass" class="form-control" required/>
                     </div>
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary">Update Student</button>
-                        <a th:href="@{/admin/manage-students}" class="btn btn-secondary ml-2">Cancel</a>
+                        <button type="submit" class="btn btn-secondary">Update Student</button>
+                        <a th:href="@{/admin/manage-students}" class="btn btn-outline-dark ml-2">Cancel</a>
                     </div>
                 </form>
             </div>
