@@ -11,6 +11,11 @@ public class RegisterParticipationRequest {
 	    private String role;
 	    private String description;
 		
+	    
+		public RegisterParticipationRequest() {
+			super();
+			// TODO Auto-generated constructor stub
+		}
 		public RegisterParticipationRequest(String activityType, String title, LocalDate date, String level,
 				String role, String description) {
 			super();

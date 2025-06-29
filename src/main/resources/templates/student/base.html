@@ -23,7 +23,7 @@
     <div class="collapse navbar-collapse" id="navbarContent">
         <ul class="navbar-nav ml-auto text-uppercase">
             <li class="nav-item"><a class="nav-link" th:href="@{/student/dashboard}">Home</a></li>
-            <li class="nav-item"><a class="nav-link" th:href="@{/student/profile}" th:text="${username}">Profile</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/student/api/profile}" th:text="${username}">Profile</a></li>
             <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Logout</a></li>
         </ul>
     </div>
@@ -49,7 +49,7 @@
     <a href="#participationSubmenu" class="item" data-toggle="collapse"><i class="fa-solid fa-medal mr-2"></i>Participation</a>
     <div class="collapse dropdown-sub" id="participationSubmenu">
         <a th:href="@{/student/add-participation-form}" class="item sub-item">Add Participation</a>
-        <a th:href="@{/student/view-participations}" class="item sub-item">View Participations</a>
+        <a th:href="@{/student/api/view-participations}" class="item sub-item">View Participations</a>
     </div>
 </div>
 

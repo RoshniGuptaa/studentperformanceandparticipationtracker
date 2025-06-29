@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{student/base :: layout(~{::body}, 'My Participation')}">
+<head></head>
+
+<body class="student-dashboard">
+    <div class="bg-overlay"></div>
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="glass-card p-4">
+                    <h3 class="text-center text-white mb-4">🎉 Participation Overview</h3>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover table-borderless text-white text-center">
+                            <thead>
+                                <tr>
+                                    <th>Activity Type</th>
+                                    <th>Title</th>
+                                    <th>Date</th>
+                                    <th>Level</th>
+                                    <th>Role</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="p : ${participations}">
+                                    <td th:text="${p.activityType}">Hackathon</td>
+                                    <td th:text="${p.title}">CodeSprint</td>
+                                    <td th:text="${#temporals.format(p.date, 'dd-MM-yyyy')}">28-06-2025</td>
+                                    <td th:text="${p.level}">National</td>
+                                    <td th:text="${p.role}">Participant</td>
+                                    <td th:text="${p.description}">A national coding challenge...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div th:if="${#lists.isEmpty(participations)}"
+                             class="text-center text-muted mt-3">
+                            No participation records found.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{student/base :: layout(~{::body}, 'My Profile')}">
+<head></head>
+<body class="student-dashboard">
+	<div class="bg-overlay"></div>
+
+	<div class="container my-5">
+		<div class="row justify-content-center">
+			<div class="col-md-8">
+				<div class="glass-card p-4 text-white shadow-lg rounded-lg">
+					<div class="text-center mb-4">
+						<div class="initial-avatar mx-auto mb-2"
+							th:text="${student.name.substring(0,1)}">R</div>
+						<h3 class="text-white font-weight-bold" th:text="${student.name}">Roshni
+							Gupta</h3>
+						<p class="text-light small" th:text="${student.academicClass}">3rd
+							Year B.Tech CSE</p>
+					</div>
+
+					<div class="profile-info mt-4">
+						<div class="info-row">
+							<i class="fa-solid fa-id-card mr-2"></i><strong> Roll
+								Number:</strong> <span th:text="${student.rollNumber}"
+								class="float-right">CU12345</span>
+						</div>
+
+						<div class="info-row">
+							<i class="fa-solid fa-layer-group mr-2"></i><strong>
+								Semester:</strong> <span th:text="${student.semester}"
+								class="float-right">6</span>
+						</div>
+						<div class="info-row">
+							<i class="fa-solid fa-book-open mr-2"></i><strong>
+								Course:</strong> <span th:text="${student.course.courseName}"
+								class="float-right">B.Tech CSE</span>
+						</div>
+						<div class="info-row align-items-start">
+							<strong class="label-col"><i class="fas fa-book"></i>
+								Subjects:</strong>
+							<ul class="subject-list pl-3 mb-0">
+								<li th:each="subject : ${student.subjects}"
+									th:text="${subject.subjectName}"></li>
+							</ul>
+						</div>
+
+					</div>
+
+					<div th:if="${error}" class="alert alert-danger mt-3"
+						th:text="${error}"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

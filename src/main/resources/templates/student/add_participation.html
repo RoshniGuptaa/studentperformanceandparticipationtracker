@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{student/base :: layout(~{::body}, 'Add Participation')}">
+<body class="student-dashboard">
+ <div class="bg-overlay"></div>
+    <div class="container my-5">
+        <div class="glass-card p-4">
+            <h3 class="text-white text-center mb-4">🎖️ Add Participation Activity</h3>
+
+            <form th:action="@{/student/api/add-participation}" method="post" th:object="${participation}">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label class="text-white">Activity Type</label>
+                        <input type="text" class="form-control" th:field="*{activityType}" placeholder="e.g. Workshop, Seminar">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="text-white">Title</label>
+                        <input type="text" class="form-control" th:field="*{title}" placeholder="e.g. AI Bootcamp">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label class="text-white">Date</label>
+                        <input type="date" class="form-control" th:field="*{date}" 
+                               th:attr="max=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="text-white">Level</label>
+                        <select class="form-control " th:field="*{level}">
+                            <option value="College">College</option>
+                            <option value="University">University</option>
+                            <option value="National">National</option>
+                            <option value="International">International</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="text-white">Role</label>
+                        <input type="text" class="form-control" th:field="*{role}" placeholder="e.g. Speaker, Attendee">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="text-white">Description</label>
+                    <textarea class="form-control" th:field="*{description}" rows="3" placeholder="Details about your activity..."></textarea>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="submit-btn">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,6 +48,14 @@ public class StudentController {
 	private PerformanceRepository performanceRepository;
 	@Autowired
 	private ParticipationRepository participationRepository;
+	
+	
+	@ModelAttribute
+    public void addCommonData(Model model, Principal principal) {
+        if (principal != null) {
+            model.addAttribute("username", principal.getName());
+        }
+    }
 	
 	//-------------------------------------------------------------------------
 	@GetMapping("my-attendance-details")
@@ -107,6 +116,29 @@ public class StudentController {
 		
 	}
 	
+	//------------------------------VIEW PROFILE----------------------
+	@GetMapping("/profile")
+	public String viewProfile(Model model, Principal principal) {
+	    String username = principal.getName();
+	    Optional<User> userOpt = userRepository.findByUsername(username);
+	    if (userOpt.isEmpty()) {
+	        model.addAttribute("error", "Invalid credentials");
+	        return "error";
+	    }
+
+	    User user = userOpt.get();
+	    Optional<Student> studentOpt = studentRepository.findByUserId(user.getId());
+	    if (studentOpt.isEmpty()) {
+	        model.addAttribute("error", "Student not found");
+	        return "error";
+	    }
+
+	    Student student = studentOpt.get();
+
+	    model.addAttribute("student", student);
+	    model.addAttribute("user", user);
+	    return "student/view_profile";
+	}
 	//-----------------------------------------------VIEW RESULT----------------------
 	@GetMapping("/view-result")
 	public String viewResult(Principal principal,RedirectAttributes redirectAttributes,Model model)
@@ -205,7 +237,7 @@ public class StudentController {
 	
 	//ADDING PARTICIPATION
 	@PostMapping("/add-participation")
-	public ResponseEntity<String> addParticipation(@RequestBody RegisterParticipationRequest req,Principal principal)
+	public String addParticipation(@RequestBody RegisterParticipationRequest req,Principal principal,RedirectAttributes redirectAttributes)
 	{
 		String username=principal.getName();
 		User user=userRepository.findByUsername(username).get();
@@ -224,19 +256,22 @@ public class StudentController {
 		
 		participationRepository.save(participation);
 		
-		return ResponseEntity.ok("Participation recorded successfully");
-		
+		redirectAttributes.addFlashAttribute("success", "Participation recorded successfully!");
+	    return "redirect:/student/view-participations";
 	}
 	
 	@GetMapping("/view-participations")
-    public ResponseEntity<?> getParticipation(Principal principal) {
+    public String getParticipation(Principal principal,RedirectAttributes redirectAttributes,Model model) {
         String username = principal.getName();
         User user = userRepository.findByUsername(username).get();
         Student student = studentRepository.findByUserId(user.getId()).get();
 
         List<Participation> participations = participationRepository.findByStudent(student);
-        if(participations.isEmpty())
-        	return ResponseEntity.ok("No participations on any event...");
+        if(participations.isEmpty()) {
+        	redirectAttributes.addFlashAttribute("error","No participations on any event...");
+        	return "student/view_participation";
+        	//return ResponseEntity.ok("No participations on any event...");
+        }
         
         List<RegisterParticipationRequest> participationRegister = participations.stream()
                 .map(p -> new RegisterParticipationRequest(
@@ -248,8 +283,9 @@ public class StudentController {
                     p.getDescription()
                 ))
                 .collect(Collectors.toList());
-
-            return ResponseEntity.ok(participationRegister);
+        model.addAttribute("participations", participations);
+        return "student/view_particapation";
+            //return ResponseEntity.ok(participationRegister);
        
     }
 }
