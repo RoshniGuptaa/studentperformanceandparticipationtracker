@@ -82,4 +82,15 @@ a:hover {
         h3 {
             font-weight: 600;
         }
+   .eye-box {
+    background-color: #f8f9fa;
+    border-left: none;
+    border-radius: 0 0.375rem 0.375rem 0; /* match Bootstrap 5's border radius */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.eye-box:hover {
+    background-color: #e2e6ea;
+}
     

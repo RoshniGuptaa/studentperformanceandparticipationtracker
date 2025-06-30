@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EduTrakPro – Launch</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap + Google Fonts + Font Awesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: url('/img/edulaunch2.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 0;
+        }
+
+        .glass-card {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 40px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .glass-card h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        .glass-card p {
+            font-size: 1.1rem;
+            margin: 15px 0 30px;
+            color: #e0e0e0;
+        }
+
+        .btn-launch {
+            background: linear-gradient(to right, #38ef7d, #11998e);
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: white;
+            transition: 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-launch:hover {
+            background: linear-gradient(to right, #11998e, #38ef7d);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 576px) {
+            .glass-card h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+
+    <div class="glass-card">
+        <h1><i class="fas fa-graduation-cap me-2"></i>EduTrakPro</h1>
+        <p>A Professional System for Educational Tracking — Monitor Performance, Attendance & Participation with Ease</p>
+        <a href="/login" class="btn-launch">Get Started</a>
+    </div>
+</body>
+</html>
