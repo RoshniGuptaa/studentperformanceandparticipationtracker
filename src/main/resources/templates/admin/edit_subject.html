@@ -2,54 +2,56 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{admin/base :: layout(~{::section}, 'Edit Subject')}">
 <head>
-    <meta charset="UTF-8">
+    
 </head>
 <body>
-<section class="container mt-5">
+<section class="container mt-5 mb-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg p-4" >
-                <h3 class="text-center heading mb-4">Edit Subject</h3>
+        <div class="col-md-10">
+            <div class="card glass-card shadow-lg p-5" style="background: rgba(0,0,0,0.4);">
+                <h3 class="text-center mb-4" style="color: #38ef7d; font-weight: 600;">Edit Subject</h3>
 
-                <div th:if="${success}" class="alert alert-success text-center" th:text="${success}"></div>
-                <div th:if="${error}" class="alert alert-danger text-center" th:text="${error}"></div>
+                <div th:if="${success}" class="alert alert-success text-center font-weight-bold" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-danger text-center font-weight-bold" th:text="${error}"></div>
 
                 <form th:action="@{'/admin/api/edit-subject/' + ${subject.subjectCode}}" method="post">
                     <input type="hidden" name="_method" value="put" />
 
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label><strong>Subject Code</strong></label>
                         <input type="text" name="subjectCode" class="form-control" th:value="${subject.subjectCode}" required />
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label><strong>Subject Name</strong></label>
                         <input type="text" name="subjectName" class="form-control" th:value="${subject.subjectName}" required />
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label><strong>Course</strong></label>
-                        <select name="courseId" class="form-control">
+                        <select name="courseId" class="form-control" required>
+                            <!--  <option value="" disabled>Select a course</option>-->
                             <option th:each="course : ${courses}"
                                     th:value="${course.id}"
                                     th:text="${course.courseName}"
-                                    th:selected="${course.id} == ${subject.course.id}"></option>
+                                    th:selected="${course.id == subject.course.id}"></option>
                         </select>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label><strong>Faculty</strong></label>
-                        <select name="facultyId" class="form-control">
+                        <select name="facultyId" class="form-control" required>
+                            <!--  <option value="" disabled>Select a faculty</option>-->
                             <option th:each="faculty : ${faculties}"
                                     th:value="${faculty.id}"
                                     th:text="${faculty.name}"
-                                    th:selected="${faculty.id} == ${subject.faculty.id}"></option>
+                                    th:selected="${faculty.id == subject.faculty.id}"></option>
                         </select>
                     </div>
 
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-success px-4">Update</button>
-                        <a th:href="@{/admin/manage-subjects}" class="btn btn-outline-dark ml-2">Back</a>
+                    <div class="text-center mt-4 d-flex justify-content-center  flex-wrap">
+                        <button type="submit" class="submit-btn">Update</button>
+                        <a th:href="@{/admin/manage-subjects}" class="btn btn-outline-light ml-2 px-4 py-2">Back</a>
                     </div>
                 </form>
             </div>

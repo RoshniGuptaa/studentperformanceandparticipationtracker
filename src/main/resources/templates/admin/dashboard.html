@@ -4,11 +4,11 @@
 <head>
     <title>Admin Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    
-   
 </head>
-<body>
+<body class="student-dashboard">
 <section>
+    <div class="bg-overlay"></div>
+
     <div class="container mt-5">
         <div th:if="${message}" th:classappend="'alert '+${message.type}" class="alert" role="alert">
             <p th:text="${message.content}"></p>
@@ -17,10 +17,10 @@
         <div class="row text-center">
             <!-- Course Card -->
             <div class="col-md-3 p-3">
-                <div class="card gradient-card shadow-lg">
+                <div class="glass-card shadow">
                     <div class="card-body">
-                        <i class="fa-solid fa-book dashboard-icon"></i>
-                        <h5 class="text-white">Courses</h5>
+                        <i class="fa-solid fa-book dashboard-icon fa-2x mb-2"></i>
+                        <h5>Courses</h5>
                         <p>Manage all courses offered.</p>
                         <a th:href="@{/admin/manage-courses}" class="btn btn-outline-light btn-sm">View</a>
                     </div>
@@ -29,10 +29,10 @@
 
             <!-- Subject Card -->
             <div class="col-md-3 p-3">
-                <div class="card gradient-card shadow-lg">
+                <div class="glass-card shadow">
                     <div class="card-body">
-                        <i class="fa-solid fa-book-open dashboard-icon"></i>
-                        <h5 class="text-white">Subjects</h5>
+                        <i class="fa-solid fa-book-open dashboard-icon fa-2x mb-2"></i>
+                        <h5>Subjects</h5>
                         <p>Add or edit subjects.</p>
                         <a th:href="@{/admin/manage-subjects}" class="btn btn-outline-light btn-sm">View</a>
                     </div>
@@ -41,10 +41,10 @@
 
             <!-- Student Card -->
             <div class="col-md-3 p-3">
-                <div class="card gradient-card shadow-lg">
+                <div class="glass-card shadow">
                     <div class="card-body">
-                        <i class="fa-solid fa-user-graduate dashboard-icon"></i>
-                        <h5 class="text-white">Students</h5>
+                        <i class="fa-solid fa-user-graduate dashboard-icon fa-2x mb-2"></i>
+                        <h5>Students</h5>
                         <p>Register and manage students.</p>
                         <a th:href="@{/admin/manage-students}" class="btn btn-outline-light btn-sm">View</a>
                     </div>
@@ -53,10 +53,10 @@
 
             <!-- Faculty Card -->
             <div class="col-md-3 p-3">
-                <div class="card gradient-card shadow-lg">
+                <div class="glass-card shadow">
                     <div class="card-body">
-                        <i class="fa-solid fa-chalkboard-teacher dashboard-icon"></i>
-                        <h5 class="text-white">Faculty</h5>
+                        <i class="fa-solid fa-chalkboard-teacher dashboard-icon fa-2x mb-2"></i>
+                        <h5>Faculty</h5>
                         <p>Manage faculty members.</p>
                         <a th:href="@{/admin/manage-faculties}" class="btn btn-outline-light btn-sm">View</a>
                     </div>
@@ -64,9 +64,10 @@
             </div>
         </div>
 
+        <!-- Welcome Message -->
         <div class="text-center mt-5 welcome-message">
             <h3 class="text-white"><i>Welcome to EduTrakPro Admin Panel</i></h3>
-            <h4 style="font-style: italic; color:white;">– A professional system for educational tracking.</h4>
+            <h4 class="text-white" style="font-style: italic;">– A professional system for educational tracking.</h4>
         </div>
     </div>
 </section>

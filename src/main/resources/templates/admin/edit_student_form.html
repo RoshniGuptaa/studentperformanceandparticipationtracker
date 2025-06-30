@@ -3,55 +3,94 @@
       th:replace="~{admin/base :: layout(~{::section}, 'Edit Student')}">
 <head>
     <meta charset="UTF-8">
+    <!-- Font Awesome for Eye Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<section class="container mt-5">
+<section class="container mt-5 mb-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg p-4">
-                <h3 class="text-center heading mb-4">Edit Student</h3>
+        <div class="col-md-10">
+            <div class="card  glass-card shadow-lg p-5" style="background: rgba(0,0,0,0.4); color: white;">
+                <h3 class="text-center mb-4" style="color: #38ef7d; font-weight: 600;">Edit Student Details</h3>
+
                 <form th:action="@{'/admin/api/edit-student/' + ${student.rollNumber}}" method="post">
-                    <div class="form-group">
+
+                    <div class="form-group mb-3">
                         <label><strong>Name</strong></label>
-                        <input type="text" th:value="${student.name}" name="name" class="form-control" required/>
+                        <input type="text" th:value="${student.name}" name="name" class="form-control" required />
                     </div>
-                    <div class="form-group">
+
+                    <div class="form-group mb-3">
                         <label><strong>Roll Number</strong></label>
-                        <input type="text" th:value="${student.rollNumber}" name="rollNumber" class="form-control" required/>
+                        <input type="text" th:value="${student.rollNumber}" name="rollNumber" class="form-control" required />
                     </div>
-                    <div class="form-group">
+
+                    <div class="form-group mb-3">
                         <label><strong>Username</strong></label>
-                        <input type="text" th:value="${student.user.username}" name="username" class="form-control" required/>
+                        <input type="text" th:value="${student.user.username}" name="username" class="form-control" required />
                     </div>
-                    <div class="form-group">
-                        <label><strong>Password</strong> (leave blank to keep unchanged)</label>
-                        <input type="password" name="password" class="form-control"/>
+
+                    <!-- Password with eye toggle -->
+                    <div class="form-group mb-3 position-relative">
+                        <label><strong>Password</strong> <small class="text-light">(leave blank to keep unchanged)</small></label>
+                        <div class="input-group">
+                            <input type="password" name="password" id="password" class="form-control" placeholder="••••••••" />
+                            <div class="input-group-append">
+                                <span class="input-group-text bg-transparent border-left-0" style="cursor:pointer;" onclick="togglePassword()">
+                                    <i id="eyeIcon" class="fa fa-eye text-white"></i>
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
+
+                    <div class="form-group mb-3">
                         <label><strong>Course</strong></label>
-                        <select name="courseCode" class="form-control">
+                        <select name="courseCode" class="form-control" required>
                             <option th:each="course : ${courses}" th:value="${course.courseCode}"
                                     th:selected="${course.courseCode == student.course.courseCode}"
                                     th:text="${course.courseName}">
                             </option>
                         </select>
                     </div>
-                    <div class="form-group">
+
+                    <div class="form-group mb-3">
                         <label><strong>Semester</strong></label>
-                        <input type="text" th:value="${student.semester}" name="semester" class="form-control" required/>
+                        <input type="text" th:value="${student.semester}" name="semester" class="form-control" required />
                     </div>
-                    <div class="form-group">
+
+                    <div class="form-group mb-3">
                         <label><strong>Class</strong></label>
-                        <input type="text" th:value="${student.academicClass}" name="academicClass" class="form-control" required/>
+                        <input type="text" th:value="${student.academicClass}" name="academicClass" class="form-control" required />
                     </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-secondary">Update Student</button>
-                        <a th:href="@{/admin/manage-students}" class="btn btn-outline-dark ml-2">Cancel</a>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-success px-4">Update Student</button>
+                        <a th:href="@{/admin/manage-students}" class="btn btn-outline-light ml-2 px-4">Cancel</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+    
+<!-- Eye Toggle Script -->
+<script>
+    function togglePassword() {
+        const pwd = document.getElementById("password");
+        const icon = document.getElementById("eyeIcon");
+
+        if (pwd.type === "password") {
+            pwd.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            pwd.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
+    }
+</script>
 </section>
+
+
 </body>
 </html>

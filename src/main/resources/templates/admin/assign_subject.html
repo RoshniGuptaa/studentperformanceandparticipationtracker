@@ -2,21 +2,21 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{admin/base :: layout(~{::section}, 'Assign Subjects')}">
 <head>
-    <meta charset="UTF-8">
+   
 </head>
 <body>
-<section class="container mt-5">
+<section class="container mt-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-md-10 col-lg-8">
-            <div class="card p-5">
-                <h3 class="text-center text-primary mb-4 font-weight-bold">Assign Subjects to Faculty</h3>
+            <div class="card glass-card p-5 shadow-lg" style="background: rgba(0,0,0,0.4);">
+                <h3 class="text-center mb-4" style="color: #38ef7d; font-weight: 600;">Assign Subjects to Faculty</h3>
 
                 <div th:if="${success}" class="alert alert-success text-center font-weight-bold" th:text="${success}"></div>
                 <div th:if="${error}" class="alert alert-danger text-center font-weight-bold" th:text="${error}"></div>
 
                 <!-- Faculty Details -->
                 <div class="mb-4 text-center">
-                    <h5 class="font-weight-bold text-dark">Faculty Details</h5>
+                    <h5 class="text-white">Faculty Details</h5>
                     <p th:text="'Name: ' + ${faculty.name}" class="text-secondary"></p>
                     <p th:text="'Username: ' + ${faculty.user.username}" class="text-secondary"></p>
                     <p th:text="'Department: ' + ${faculty.department}" class="text-secondary"></p>
@@ -27,13 +27,13 @@
                     <input type="hidden" name="facultyId" th:value="${faculty.id}" />
 
                     <div class="form-group">
-                        <label class="font-weight-bold mb-2">Select Subjects</label>
+                        <label class="mb-2 text-white">Select Subjects</label>
                         <div class="row">
                             <div class="col-sm-6 mb-2" th:each="subject : ${subjects}">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="subjectIds"
                                            th:value="${subject.id}" th:id="'subject_' + ${subject.id}">
-                                    <label class="form-check-label text-dark" th:for="'subject_' + ${subject.id}"
+                                    <label class="form-check-label text-white" th:for="'subject_' + ${subject.id}"
                                            th:text="${subject.subjectName}"></label>
                                 </div>
                             </div>
@@ -41,9 +41,9 @@
                     </div>
 
                     <!-- Buttons -->
-                    <div class="text-center mt-4">
-                        <button type="submit" class="btn btn-primary px-4">Assign</button>
-                        <a th:href="@{/admin/manage-faculties}" class="btn btn-outline-dark ml-3 px-4">Back</a>
+                    <div class="text-center mt-4 d-flex justify-content-center  flex-wrap">
+                        <button type="submit" class="submit-btn">Assign</button>
+                        <a th:href="@{/admin/manage-faculties}" class="btn btn-outline-dark ml-2 px-4 py-2">Back</a>
                     </div>
                 </form>
             </div>
