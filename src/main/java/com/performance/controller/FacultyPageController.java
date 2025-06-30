@@ -54,6 +54,7 @@ public class FacultyPageController {
 	            model.addAttribute("username", principal.getName());
 	        }
 	    }
+	  
 	    
 	@GetMapping("/dashboard")
     public String dashboardPage(Principal principal,Model model) {
@@ -62,6 +63,15 @@ public class FacultyPageController {
     	model.addAttribute("username", username);
         return "faculty/dashboard"; // Thymeleaf view
     }
+	
+	@GetMapping("/profile")
+	public String viewFacultyProfile(Model model, Principal principal) {
+	    User user = userRepository.findByUsername(principal.getName()).orElseThrow();
+	    Faculty faculty = facultyRepository.findByUserId(user.getId()).orElseThrow();
+	    model.addAttribute("faculty", faculty);
+	    return "faculty/profile";
+	}
+
 	
 	@GetMapping("/mark-attendance")
 	public String showSubjectSelectionPage(Model model, Principal principal) {

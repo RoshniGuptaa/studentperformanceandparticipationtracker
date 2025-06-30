@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{faculty/base :: layout(~{::section}, 'Faculty Profile')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Faculty Profile</title>
+</head>
+<body>
+<section class="container mt-5">
+    <div class="glass-card p-5">
+        <!-- Header with Avatar and Basic Info -->
+        <div class="d-flex flex-column flex-md-row align-items-center">
+            <!-- Avatar -->
+            <div class="initial-avatar mb-3 mb-md-0 mr-md-4"
+                 th:text="${faculty.name.substring(0,1)}">F</div>
+
+            <!-- Info Section -->
+            <div class="text-md-left text-center">
+                <h3 class="text-white mb-1" th:text="${faculty.name}">Faculty Name</h3>
+                <p class="text-info mb-1" th:text="'Department: ' + ${faculty.department}">Department</p>
+                <p class="text-light mb-1" th:text="'Email: ' + ${faculty.email}">Email</p>
+                <p class="text-light" th:text="'Username: ' + ${faculty.user.username}">Username</p>
+            </div>
+        </div>
+
+        <hr class="bg-light mt-4 mb-4">
+
+        <!-- Subject Section -->
+        <div>
+            <h5 class="text-info mb-3"><i class="fas fa-book-open mr-2"></i>Subjects Assigned</h5>
+            <ul class="subject-list" th:if="${faculty.subjects != null and #lists.size(faculty.subjects) > 0}">
+                <li th:each="subject : ${faculty.subjects}"
+                    th:text="${subject.subjectName + ' (' + subject.subjectCode + ')'}"></li>
+            </ul>
+            <p class="text-muted" th:if="${faculty.subjects == null or #lists.isEmpty(faculty.subjects)}">
+                No subjects assigned yet.
+            </p>
+        </div>
+    </div>
+</section>
+</body>
+</html>
