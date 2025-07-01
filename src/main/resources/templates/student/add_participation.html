@@ -24,9 +24,9 @@
                         <input type="date" class="form-control" th:field="*{date}" 
                                th:attr="max=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-6">
                         <label class="text-white">Level</label>
-                        <select class="form-control " th:field="*{level}">
+                        <select class="form-control pt-1 pb-2" th:field="*{level}">
                             <option value="College">College</option>
                             <option value="University">University</option>
                             <option value="National">National</option>

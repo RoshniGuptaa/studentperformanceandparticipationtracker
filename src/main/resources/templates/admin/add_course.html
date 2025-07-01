@@ -40,7 +40,7 @@
 
                     <div class="form-group mt-3">
                         <label for="facultyId" class="text-light"><strong>Faculty</strong></label>
-                        <select class="form-control" id="facultyId" name="facultyId" required>
+                        <select class="form-control pt-1 pb-2" id="facultyId" name="facultyId" required>
                             <option value="" disabled selected>Select Faculty</option>
                             <option th:each="faculty : ${faculties}" th:value="${faculty.id}"
                                     th:text="${faculty.name} + ' (' + ${faculty.user.username} + ')'">

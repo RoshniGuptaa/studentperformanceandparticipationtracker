@@ -14,7 +14,7 @@
 
         <div class="form-group">
             <label for="subjectSelect">Select Subject</label>
-            <select id="subjectSelect" class="form-control">
+            <select id="subjectSelect" class="form-control pt-1 pb-2">
                 <option value="" disabled selected>Select</option>
                 <option name="subjectCode" th:each="subject : ${subjects}" 
                         th:value="${subject.subjectCode}" 
@@ -59,7 +59,7 @@ document.getElementById('subjectSelect').addEventListener('change', function() {
                     <td>${student.rollNumber}</td>
                     <td>${student.name}</td>
                     <td>
-                        <select name="status" class="form-control status-select" data-student-id="${student.id}">
+                        <select name="status" class="form-control status-select pt-1 pb-2" data-student-id="${student.id}">
                             <option value="Present">Present</option>
                             <option value="Absent">Absent</option>
                         </select>
@@ -77,6 +77,16 @@ document.getElementById('attendanceForm').addEventListener('submit', function(e)
     const subjectCode = document.getElementById('subjectSelect').value;
     const rows = document.querySelectorAll('.status-select');
 
+ // Convert selected date and today's date to comparable format
+    const selectedDate = new Date(date);
+    const today = new Date();
+    today.setHours(24, 24, 0, 0); // Clear time for accurate comparison
+
+    if (selectedDate > today) {
+        document.getElementById("messageBox").innerHTML =
+            `<div class="alert alert-warning">Attendance can not be marked for future dates.</div>`;
+        return;
+    }
     const attendanceData = Array.from(rows).map(row => ({
         studentId: row.dataset.studentId,
         subjectCode: subjectCode,
