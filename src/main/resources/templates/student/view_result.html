@@ -4,17 +4,17 @@
 <div class="bg-overlay"></div>
     <div class="container my-5">
         <div class="glass-card p-4">
-            <h3 class="text-white text-center mb-3">
-                📚 Result Summary for <span th:text="${StudentName}">Student</span> 🎓
+            <h3   class="text-white text-center mb-3">
+                📚 Result Summary for <span id="studentName" th:text="${StudentName}">Student</span> 🎓
             </h3>
 
-            <h5 class="text-center text-light mb-4">
-                Roll No: <span th:text="${rollNumber}">CU123456</span> | 
-                <strong>CGPA: <span th:text="${cgpa}"></span></strong>
+            <h5   class="text-center text-light mb-4">
+                Roll No: <span id="rollNumber" th:text="${rollNumber}">CU123456</span> | 
+                <strong>CGPA: <span id="cgpa" th:text="${cgpa}"></span></strong>
             </h5>
 
             <div class="table-responsive">
-                <table class="table table-hover table-borderless text-white text-center">
+                <table id="resultTable" class="table table-hover table-borderless text-white text-center">
                     <thead >
                         <tr>
                             <th>Subject Code</th>
@@ -39,8 +39,57 @@
             <div th:if="${#lists.isEmpty(results)}" class="text-center text-muted mt-3">
                 No results found yet 💤
             </div>
+            <!-- Replace this -->
+<button onclick="downloadPDF()" class="btn btn-outline-light">Download PDF</button>
+
+
+            
         </div>
     </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+<script th:inline="none">
+    window.jsPDF = window.jspdf.jsPDF;
+
+    function downloadPDF() {
+        const doc = new jsPDF();
+
+        doc.setFontSize(16);
+        doc.text("EduTrakPro - Result Summary", 60, 20);
+
+        doc.setFontSize(12);
+        const studentName = document.getElementById("studentName")?.textContent || "Student";
+        const rollNumber = document.getElementById("rollNumber")?.textContent || "---";
+        const cgpa = document.getElementById("cgpa")?.textContent || "---";
+
+        doc.text(`Name: ${studentName}`, 20, 35);
+        doc.text(`Roll Number: ${rollNumber}`, 20, 42);
+        doc.text(`CGPA: ${cgpa}`, 20, 49);
+
+        // ✅ Correctly declared JavaScript array (Thymeleaf won't interfere)
+        const headers = [["Subject Code", "Subject Name", "Marks", "Grade", "Grade Point"]];
+        const data = [];
+
+        document.querySelectorAll("#resultTable tbody tr").forEach(row => {
+            const cells = row.querySelectorAll("td");
+            const rowData = Array.from(cells).map(td => td.textContent.trim());
+            data.push(rowData);
+        });
+
+        doc.autoTable({
+            head: headers,
+            body: data,
+            startY: 60,
+            theme: 'grid',
+            headStyles: { fillColor: [22, 160, 133] },
+            styles: { halign: 'center' }
+        });
+
+        doc.save("result-summary.pdf");
+    }
+</script>
 
 </body>
 </html>
