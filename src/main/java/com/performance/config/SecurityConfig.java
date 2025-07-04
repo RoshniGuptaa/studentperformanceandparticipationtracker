@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .cors(cors->cors.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**","/login","/register","/", "/css/**","/img/**","/forgot", "/js/**","/favicon.ico" ).permitAll()
-                        .requestMatchers("/admin/**","/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**","/admin/api/**","/admin/add-faculty").hasRole("ADMIN")
                         .requestMatchers("/student/**").hasRole("STUDENT")
                         .requestMatchers("/faculty/**").hasRole("FACULTY")
                         .anyRequest().authenticated()
