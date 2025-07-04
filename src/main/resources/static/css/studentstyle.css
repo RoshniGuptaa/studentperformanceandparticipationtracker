@@ -276,6 +276,58 @@ button.submit-btn:hover {
     transform: translateY(-2px);
 }
  
+.btn-action {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    margin: 2px;
+}
+
+.btn-edit {
+    color: #38bdf8;
+    border: 1px solid #38bdf8;
+    background: transparent;
+}
+
+.btn-edit:hover {
+    background-color: #38bdf8;
+    color: white;
+}
+
+.btn-delete {
+    color: #f87171;
+    border: 1px solid #f87171;
+    background: transparent;
+}
+
+.btn-delete:hover {
+    background-color: #f87171;
+    color: white;
+}
+
+.btn-assign {
+    color: #4ade80;
+    border: 1px solid #4ade80;
+    background: transparent;
+}
+
+.btn-assign:hover {
+    background-color: #4ade80;
+    color: black;
+}
+
+.btn-remove {
+    color: #facc15;
+    border: 1px solid #facc15;
+    background: transparent;
+}
+
+.btn-remove:hover {
+    background-color: #facc15;
+    color: black;
+}
 select {
     appearance: none;
     -webkit-appearance: none;
