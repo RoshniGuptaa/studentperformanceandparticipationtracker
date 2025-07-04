@@ -237,7 +237,7 @@ public class StudentController {
 	
 	//ADDING PARTICIPATION
 	@PostMapping("/add-participation")
-	public String addParticipation(@RequestBody RegisterParticipationRequest req,Principal principal,RedirectAttributes redirectAttributes)
+	public String addParticipation(@ModelAttribute("participation") RegisterParticipationRequest req,Principal principal,RedirectAttributes redirectAttributes)
 	{
 		String username=principal.getName();
 		User user=userRepository.findByUsername(username).get();
@@ -269,7 +269,7 @@ public class StudentController {
         List<Participation> participations = participationRepository.findByStudent(student);
         if(participations.isEmpty()) {
         	redirectAttributes.addFlashAttribute("error","No participations on any event...");
-        	return "student/view_participation";
+        	return "student/view_particapation";
         	//return ResponseEntity.ok("No participations on any event...");
         }
         
