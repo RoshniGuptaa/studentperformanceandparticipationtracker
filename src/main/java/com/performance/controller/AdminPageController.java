@@ -71,7 +71,8 @@ public class AdminPageController {
     }
     
     @GetMapping("/add-faculty")
-    public String addFacultyForm(Model model) {
+    public String addFacultyForm(Model model,Principal principal) {
+    	System.out.println("Logged in user: " + principal.getName()); // debug
         model.addAttribute("faculty", new RegisterFacultyRequest());
         return "/admin/add_faculty";
     }
