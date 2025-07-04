@@ -163,7 +163,7 @@ public class StudentController {
 		if(performances.isEmpty())
 		{
 			model.addAttribute("noData", "No marks available yet.");
-            return "student/view-result";
+            return "student/view_result";
  
 			//ResponseEntity.ok("No marks available yet ....");
 		}
