@@ -5,16 +5,16 @@ import jakarta.validation.constraints.NotBlank;
 
 public class RegisterFacultyRequest {
 	@NotBlank(message = "Username is required")
-	public String username;
+	private  String username;
 	 @NotBlank(message = "Password is required")
-    public String password;
-	 public String name;
+    private  String password;
+	 private  String name;
     
     @NotBlank(message = "Department is required")
-    public String department;
+    private String department;
     @Email(message = "Invalid email address")
     @NotBlank(message = "Email is required")
-    public String email;
+    private  String email;
 	public String getUsername() {
 		return username;
 	}

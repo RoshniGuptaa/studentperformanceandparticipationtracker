@@ -423,7 +423,7 @@ public class AdminController {
     	// Register Faculty
         @PostMapping("/register-faculty")
         public String registerFaculty(@Valid @ModelAttribute("faculty") RegisterFacultyRequest request,Model model,BindingResult result) {
-            if (userRepository.findByUsername(request.username).isPresent()) {
+            if (userRepository.findByUsername(request.getUsername()).isPresent()) {
                 //return ResponseEntity.badRequest().body("Username already exists");
             	result.rejectValue("username", null,"Username already exists");
             }
@@ -431,17 +431,17 @@ public class AdminController {
                 return "admin/add_faculty";
             }
             User user = new User();
-            user.setUsername(request.username);
-            user.setPassword(passwordEncoder.encode(request.password));
+            user.setUsername(request.getUsername());
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setRole("ROLE_FACULTY");
             user.setEnabled(true);
 
             userRepository.save(user);
 
             Faculty faculty = new Faculty();
-            faculty.setName(request.name);
-            faculty.setDepartment(request.department);
-            faculty.setEmail(request.email);
+            faculty.setName(request.getName());
+            faculty.setDepartment(request.getDepartment());
+            faculty.setEmail(request.getEmail());
             faculty.setUser(user);
 
             facultyRepository.save(faculty);
@@ -474,15 +474,15 @@ public class AdminController {
     		}
     		
     		
-    		if (req.username != null) user.setUsername(req.username);
-    	    if (req.password != null && !req.password.isBlank()) {
-    	        user.setPassword(passwordEncoder.encode(req.password));
+    		if (req.getUsername() != null) user.setUsername(req.getUsername());
+    	    if (req.getPassword() != null && !req.getPassword().isBlank()) {
+    	        user.setPassword(passwordEncoder.encode(req.getPassword()));
     	    }
     	    userRepository.save(user);
     	    
-    	    if (req.name != null) faculty.setName(req.name);
-    	    if (req.department != null) faculty.setDepartment(req.department);
-    	    if (req.email != null) faculty.setEmail(req.email);
+    	    if (req.getName() != null) faculty.setName(req.getName());
+    	    if (req.getDepartment() != null) faculty.setDepartment(req.getDepartment());
+    	    if (req.getEmail() != null) faculty.setEmail(req.getEmail());
 
     	    faculty.setUser(user);
     	    facultyRepository.save(faculty);
