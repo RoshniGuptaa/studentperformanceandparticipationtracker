@@ -257,7 +257,7 @@ public class StudentController {
 		participationRepository.save(participation);
 		
 		redirectAttributes.addFlashAttribute("success", "Participation recorded successfully!");
-	    return "redirect:/student/view-participations";
+	    return "redirect:/student/api/view-participations";
 	}
 	
 	@GetMapping("/view-participations")
